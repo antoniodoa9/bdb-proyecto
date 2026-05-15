@@ -1,25 +1,32 @@
 \documentclass[../main.tex]{subfiles}
 
 \begin{document}
-%% begin abstract format
+
 \makeatletter
 \renewenvironment{abstract}{%
     \if@twocolumn
       \section*{Abstract \\}%
-    \else %% <- here I've removed \small
+    \else
     \begin{flushright}
-        {\filleft\Huge\bfseries\fontsize{48pt}{12}\selectfont Abstract\vspace{\z@}}%  %% <- here I've added the format
+        {\filleft\Huge\bfseries\fontsize{48pt}{12}\selectfont Abstract\vspace{\z@}}%
         \end{flushright}
       \quotation
     \fi}
     {\if@twocolumn\else\endquotation\fi}
 \makeatother
-%% end abstract format
+
 \begin{abstract}
 
-\blindtext
+Healthcare information systems face two concurrent and often conflicting demands: preserving complete longitudinal patient histories while complying with increasingly strict data protection regulations. The General Data Protection Regulation (GDPR, EU 2016/679) classifies health data as a special category requiring privacy-by-design architectures, yet most legacy systems store clinical and personal identifying information in the same tables, making epidemiological research inherently risky from a data protection standpoint.
 
-\bfseries{\large{Keywords:}} A, B, C
+This work presents \textbf{ChronoHealthDB}, a longitudinal medical record management system built on MySQL~8 that addresses both challenges simultaneously. The core architectural decision is the physical separation of clinical data from personal data through a SHA-256 cryptographic hash of the patient's national identity document. This bridge allows researchers to aggregate and analyse clinical histories through an anonymous identifier without ever accessing the patient's real identity, whilst clinical staff retain full access through a separate, privilege-controlled schema.
+
+Performance optimisation is achieved through a deliberate multi-engine strategy: InnoDB handles all transactional tables requiring referential integrity and MVCC; ARCHIVE stores immutable medical leave records with native zlib compression; and MEMORY hosts the real-time emergency triage queue to guarantee sub-millisecond response times. A synthetic dataset of \textbf{40,000 patient histories} was generated using Python and the Faker library to provide a realistic test volume.
+
+Empirical benchmarking across three representative query patterns validated the design decisions quantitatively. Proper indexing produced speedups of \textbf{33.8×} for temporal aggregations, \textbf{62.3×} for patient-history joins, and \textbf{1.5×} for triage priority lookups. The MEMORY engine reduced triage query latency by \textbf{45.9\%} compared to InnoDB. On the storage side, ARCHIVE achieved a \textbf{79.2\% space reduction} relative to InnoDB for the same medical leave dataset (533~KiB vs.\ 2,560~KiB for $\approx$6,300 records), which at regional health-system scale translates to hundreds of gigabytes in annual savings.
+
+\bigskip
+\noindent\bfseries{\large{Keywords:}} MySQL, InnoDB, ARCHIVE, MEMORY, GDPR, pseudonymisation, longitudinal medical records, query benchmarking, storage engines, indexing, Python, Faker.
 
 \end{abstract}
 \end{document}

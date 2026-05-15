@@ -1,40 +1,32 @@
 \documentclass[../main.tex]{subfiles}
 
 \begin{document}
-%% begin abstract format
-\makeatletter
-\renewenvironment{abstract}{%
-    \if@twocolumn
-      \section*{Resumen \\}%
-    \else %% <- here I've removed \small
-    \begin{flushright}
-        {\filleft\Huge\bfseries\fontsize{48pt}{12}\selectfont Resumen\vspace{\z@}}%  %% <- here I've added the format
-        \end{flushright}
-      \quotation
-    \fi}
-    {\if@twocolumn\else\endquotation\fi}
-\makeatother
-%% end abstract format
-%% begin abstract format
-\makeatletter
-\renewenvironment{abstract}{%
-    \if@twocolumn
-      \section*{Resumen \\}%
-    \else %% <- here I've removed \small
-    \begin{flushright}
-        {\filleft\Huge\bfseries\fontsize{48pt}{12}\selectfont Resumen\vspace{\z@}}%  %% <- here I've added the format
-        \end{flushright}
-      \quotation
-    \fi}
-    {\if@twocolumn\else\endquotation\fi}
-\makeatother
-%% end abstract format
-\begin{abstract}
-\blindtext
 
-\bfseries{\large{Palabras clave:}} A, B, C
+\makeatletter
+\renewenvironment{abstract}{%
+    \if@twocolumn
+      \section*{Resumen \\}%
+    \else
+    \begin{flushright}
+        {\filleft\Huge\bfseries\fontsize{48pt}{12}\selectfont Resumen\vspace{\z@}}%
+        \end{flushright}
+      \quotation
+    \fi}
+    {\if@twocolumn\else\endquotation\fi}
+\makeatother
+
+\begin{abstract}
+
+Los sistemas de información sanitaria deben preservar historiales médicos longitudinales completos a lo largo de décadas y, al mismo tiempo, cumplir con una normativa de protección de datos que clasifica la información de salud como categoría especial de especial sensibilidad. El Reglamento General de Protección de Datos (RGPD, Reglamento UE 2016/679) exige que estos sistemas incorporen la privacidad como un principio de diseño desde su concepción, no como una capa de seguridad añadida a posteriori. Sin embargo, los sistemas heredados suelen mezclar datos clínicos y datos identificativos en las mismas tablas, lo que convierte cualquier consulta epidemiológica en un riesgo potencial de exposición de información privada.
+
+Este trabajo presenta \textbf{ChronoHealthDB}, un sistema de gestión de historiales médicos longitudinales implementado sobre MySQL~8 que aborda ambas problemáticas de forma simultánea. La decisión arquitectónica central es la separación física de los datos clínicos y los datos personales mediante un \textit{hash} criptográfico SHA-256 del documento de identidad del paciente. Este puente permite a los investigadores agregar y analizar historiales clínicos a través de un identificador anónimo sin acceder en ningún momento a la identidad real del paciente, mientras que el personal clínico mantiene acceso completo a través de un esquema separado con gestión de privilegios estricta.
+
+La optimización del rendimiento se consigue mediante una estrategia multi-motor deliberada: InnoDB gestiona las tablas transaccionales que requieren integridad referencial y MVCC; ARCHIVE almacena los registros históricos de bajas médicas con compresión \textit{zlib} nativa; y MEMORY aloja la cola de triaje de urgencias en tiempo real para garantizar tiempos de respuesta sub-milisegundo. Se generó un conjunto de datos sintético de \textbf{40.000 historiales clínicos} mediante Python y la biblioteca Faker para disponer de un volumen de prueba representativo.
+
+El benchmarking empírico sobre tres patrones de consulta representativos validó cuantitativamente las decisiones de diseño. Una indexación adecuada produjo aceleraciones de \textbf{33,8×} en agregaciones temporales, \textbf{62,3×} en joins de historial de paciente y \textbf{1,5×} en consultas de triaje por prioridad. El motor MEMORY redujo la latencia de triaje un \textbf{45,9\%} respecto a InnoDB. En cuanto al almacenamiento, ARCHIVE logró una \textbf{reducción del espacio del 79,2\%} frente a InnoDB para el mismo conjunto de datos de bajas médicas (533~KiB frente a 2.560~KiB para $\approx$6.300 registros), lo que a escala de un sistema de salud regional equivale a un ahorro de cientos de gigabytes anuales.
+
+\bigskip
+\noindent\bfseries{\large{Palabras clave:}} MySQL, InnoDB, ARCHIVE, MEMORY, RGPD, seudonimización, historiales médicos longitudinales, benchmarking de consultas, motores de almacenamiento, indexación, Python, Faker.
 
 \end{abstract}
 \end{document}
-
-
