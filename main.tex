@@ -8,6 +8,11 @@
 
 \usepackage{subfiles} % Best loaded last in the preamble
 
+%% Fix listings + XeLaTeX/fontspec: \ttfamily con fontspec no renderiza en listings.
+%% Se define una familia explícita y se sobreescribe basicstyle.
+\newfontfamily{\codefont}[Scale=0.88]{Iosevka.ttf}
+\lstset{basicstyle=\codefont\small}
+
 %% Paquetes adicionales para la parte relacional
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
