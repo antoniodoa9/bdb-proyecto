@@ -2,10 +2,54 @@
 
 \begin{document}
 
+% ===========================================================================
 \subsection{Conclusiones}
-\blindtext
+% ===========================================================================
 
-\subsection{Líneas Futuras}
-\blindtext
+Este proyecto partió de una pregunta aparentemente sencilla: ¿puede una base de datos médica ser, al mismo tiempo, conforme con el RGPD por diseño y suficientemente eficiente para uso clínico en tiempo real? El trabajo presentado en la Parte~I ofrece una respuesta concreta y empíricamente validada: sí es posible, siempre que las decisiones arquitectónicas correctas se tomen a nivel del esquema de datos y no se deleguen en código de aplicación o en capas de control de acceso.
+
+\paragraph{Sobre el cumplimiento de la privacidad por diseño.}
+La separación basada en SHA-256 entre \texttt{paciente\_anonimo} y \texttt{datos\_personales} alcanza una seudonimización estructural genuina en el sentido del Considerando~26 del RGPD. La propiedad crítica es que la anonimización no es una capa extraíble: al usuario \texttt{investigador} se le deniega el acceso a \texttt{datos\_personales} a nivel del motor de base de datos, no a través de lógica de aplicación que pudiera ser eludida. Relacionar un \texttt{codigo\_hash} con una identidad real requiere o bien el NIF original (que reside fuera de la base de datos) o un ataque de preimagen contra SHA-256, actualmente considerado computacionalmente inviable. Las restricciones \texttt{ON DELETE RESTRICT} garantizan adicionalmente que ningún registro pueda eliminarse del modelo clínico mientras exista su contrapartida de datos personales, preservando la integridad del historial de auditoría.
+
+\paragraph{Sobre la optimización multi-motor.}
+Los tres motores de almacenamiento elegidos para ChronoHealthDB ofrecieron beneficios medibles en sus respectivos roles:
+
+\begin{itemize}
+    \item \textbf{InnoDB} proporcionó las garantías transaccionales, la integridad referencial y el control de concurrencia multiversión necesarios para las tablas del flujo de trabajo clínico. El benchmarking confirmó que los índices compuestos (\texttt{idx\_paciente\_fecha}) redujeron los tiempos de join del historial de paciente de 39,89~ms a 0,64~ms (\textbf{mejora de 62,3×}), y que el índice temporal (\texttt{idx\_fecha\_evento}) redujo las consultas de conteo mensual de 46,06~ms a 1,36~ms (\textbf{33,8×}).
+
+    \item \textbf{ARCHIVE} demostró que la optimización del almacenamiento para registros históricos inmutables no es una preocupación marginal: el mismo conjunto de datos que ocupa 2.560~KiB bajo InnoDB se comprime a 533~KiB bajo ARCHIVE, una \textbf{reducción del 79,2\%} atribuible a la compresión \textit{zlib} fila a fila y a la ausencia de la infraestructura de gestión MVCC. A escala de una consejería de salud regional que gestione 200.000 bajas médicas al año durante una década, esto equivale a más de 640~GB de diferencia en almacenamiento primario.
+
+    \item \textbf{MEMORY} confirmó su idoneidad para la gestión de colas en tiempo real: las consultas de prioridad de triaje se ejecutaron en 0,77~ms, un \textbf{45,9\% más rápido} que la tabla InnoDB equivalente. Más importante aún, MEMORY garantiza una latencia constante independiente de la carga en disco, propiedad que InnoDB no puede ofrecer cuando su \textit{buffer pool} está bajo presión.
+\end{itemize}
+
+\paragraph{Sobre la generación de datos sintéticos.}
+El conjunto de datos sintético de 40.000 pacientes, con plantillas de texto orientadas a escenarios clínicos, constantes vitales correlacionadas con la patología y factores de riesgo estratificados por edad, validó que los resultados del benchmarking no son artefactos de datos trivialmente simples. El conjunto de datos se comporta como datos reales desde la perspectiva de los patrones de consulta, lo que refuerza la credibilidad de las mediciones de rendimiento.
+
+\paragraph{Valoración global.}
+El proyecto demuestra que la tensión entre el cumplimiento del RGPD y el rendimiento operativo es un falso dilema. El cumplimiento por diseño, mediante separación estructural de datos, y la optimización del rendimiento, mediante selección de motor e indexación, no son objetivos contrapuestos sino decisiones arquitectónicas complementarias que se refuerzan mutuamente. La complejidad adicional de un esquema multi-motor está plenamente justificada por las ganancias cuantificadas en ambas dimensiones.
+
+% ===========================================================================
+\subsection{Líneas Futuras de Investigación}
+% ===========================================================================
+
+La fase relacional presentada en este trabajo constituye la primera capa de un sistema naturalmente extensible. Varias líneas de investigación emergen directamente de sus limitaciones actuales:
+
+\paragraph{Extensión a paradigmas no relacionales (Parte~II).}
+El esquema estructurado de ChronoHealthDB es adecuado para datos clínicos tabulares, pero los sistemas sanitarios modernos generan información que no encaja de forma natural en estructuras relacionales rígidas. Dos paradigmas no relacionales son especialmente relevantes como extensión natural:
+
+\begin{itemize}
+    \item \textbf{Bases de datos de grafos (Neo4j / Apache AGE sobre PostgreSQL)}: las redes clínicas son inherentemente relacionales en el sentido de la teoría de grafos. Redes de comorbilidades, grafos de interacciones entre fármacos, análisis de vías de atención y trazado de contactos epidémicos son ejemplos de consultas que se expresan naturalmente como recorridos de grafo pero resultan costosas como operaciones SQL con múltiples joins. Una extensión natural consistiría en proyectar la tabla \texttt{evento\_clinico} sobre un grafo de propiedades y evaluar el rendimiento de algoritmos de grafos (camino más corto, detección de comunidades) sobre datos de pacientes anonimizados.
+
+    \item \textbf{Bases de datos documentales (MongoDB)}: las notas clínicas no estructuradas, los informes de imagen y los informes de alta son actualmente truncados u omitidos del modelo relacional por la rigidez del esquema fijo. Un almacén documental como complemento de la capa relacional permitiría albergar contenido clínico de texto libre con capacidades de búsqueda de texto completo, mientras la capa relacional conserva los datos de evento estructurados.
+\end{itemize}
+
+\paragraph{Escalabilidad horizontal y replicación.}
+El sistema actual es una instancia MySQL de nodo único. Un despliegue en producción a escala hospitalaria requeriría una topología de replicación (InnoDB Cluster o MySQL Group Replication) con réplicas de lectura para la carga de trabajo de investigación y un nodo primario para las escrituras clínicas. El efecto del retraso de replicación sobre las tablas MEMORY —que son locales a cada nodo— es una cuestión de ingeniería abierta que merece investigación específica.
+
+\paragraph{Cifrado de tablas ARCHIVE.}
+El cifrado de tablespace de InnoDB (\texttt{ENCRYPTION='Y'}) está bien documentado, pero el cifrado del motor ARCHIVE no tiene soporte nativo en todas las configuraciones. Explorar el cifrado transparente a nivel de disco para tablas ARCHIVE, o migrar la capa histórica a un motor compatible con cifrado y compresión simultáneos, abordaría el requisito regulatorio de protección de datos en reposo sin sacrificar los beneficios de compresión demostrados en este trabajo.
+
+\paragraph{Aprendizaje automático sobre datos anonimizados.}
+El conjunto de 40.000 pacientes contiene ya señal suficiente para entrenar modelos predictivos básicos sobre datos seudonimizados: riesgo de reingreso, estimación de duración del ingreso o puntuaciones de alerta temprana basadas en las constantes vitales del triaje. Una \textit{pipeline} de aprendizaje automático que opere exclusivamente sobre las tablas accesibles al usuario \texttt{investigador} demostraría una aplicación real y concreta de la arquitectura conforme con el RGPD diseñada en este trabajo.
 
 \end{document}

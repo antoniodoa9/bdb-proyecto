@@ -2,10 +2,54 @@
 
 \begin{document}
 
+% ===========================================================================
 \subsection{Conclusions}
-\blindtext
+% ===========================================================================
 
-\subsection{Future lines of Research}
-\blindtext
+This project set out to answer a deceptively simple question: can a medical database be simultaneously GDPR-compliant by design and performant enough for real-time clinical use? The work presented in Part~I provides a concrete, empirically validated answer: yes, provided the right architectural decisions are made at the schema level rather than delegated to application code or access-control layers.
+
+\paragraph{On privacy-by-design compliance.}
+The SHA-256-based separation between \texttt{paciente\_anonimo} and \texttt{datos\_personales} achieves genuine structural pseudonymisation as defined in Recital~26 of the GDPR. The critical property is that the anonymisation is not a removable layer: the investigator user account is denied access to \texttt{datos\_personales} at the database engine level, not through application logic that could be bypassed. Linking a \texttt{codigo\_hash} back to an individual identity requires either the original NIF (which lives outside the database) or a brute-force preimage attack against SHA-256, currently considered computationally infeasible. The \texttt{ON DELETE RESTRICT} constraints further guarantee that no record can be deleted from the clinical model while its personal data counterpart still exists, preserving audit-trail integrity.
+
+\paragraph{On multi-engine optimisation.}
+The three storage engines chosen for ChronoHealthDB each delivered measurable benefits in their respective roles:
+
+\begin{itemize}
+    \item \textbf{InnoDB} provided the transactional guarantees, referential integrity and multi-version concurrency required for the clinical workflow tables. Query benchmarking confirmed that composite indexes (\texttt{idx\_paciente\_fecha}) reduced patient-history join times from 39.89~ms to 0.64~ms (a \textbf{62.3× improvement}), and temporal aggregation indexes (\texttt{idx\_fecha\_evento}) reduced monthly-count queries from 46.06~ms to 1.36~ms (\textbf{33.8×}).
+
+    \item \textbf{ARCHIVE} demonstrated that storage optimisation for immutable historical records is not a marginal concern: the same dataset that occupies 2,560~KiB under InnoDB compresses to 533~KiB under ARCHIVE, a \textbf{79.2\% reduction} attributable to row-level zlib compression and the absence of MVCC overhead. At the scale of a regional health authority managing 200,000 medical leaves per year over a decade, this translates to a difference of over 640~GB of primary storage.
+
+    \item \textbf{MEMORY} confirmed its suitability for real-time queue management: triage priority queries executed in 0.77~ms, \textbf{45.9\% faster} than the equivalent InnoDB table. More importantly, MEMORY guarantees constant latency independent of disk load, a property that InnoDB cannot provide when its buffer pool is under pressure.
+\end{itemize}
+
+\paragraph{On the data generation pipeline.}
+The clinically coherent synthetic dataset of 40,000 patients (with scenario-driven text templates for clinical descriptions, vital signs correlated with pathology, and age-stratified risk factors) validated that the benchmarking results are not artefacts of trivially simple data. The dataset behaves like real-world data from the query-pattern perspective, lending credibility to the performance measurements.
+
+\paragraph{Overall assessment.}
+The project demonstrates that the tension between GDPR compliance and operational performance is a false dilemma. Compliance by design, through structural data separation, and performance optimisation, through engine selection and indexing, are not competing goals but complementary architectural decisions that reinforce each other. The additional complexity of a multi-engine schema is fully justified by the quantified gains in both dimensions.
+
+% ===========================================================================
+\subsection{Future Lines of Research}
+% ===========================================================================
+
+The relational phase presented here constitutes the first layer of a naturally extensible system. Several research directions emerge directly from its limitations:
+
+\paragraph{Extension to non-relational paradigms (Part~II).}
+The structured schema of ChronoHealthDB is well suited for tabular clinical data, but modern healthcare systems generate information that does not fit naturally into rigid relational structures. Two non-relational paradigms are particularly relevant:
+
+\begin{itemize}
+    \item \textbf{Graph databases (Neo4j / Apache AGE on PostgreSQL)}: clinical networks are inherently relational in the graph-theoretic sense. Co-morbidity networks, drug interaction graphs, care pathway analyses and epidemic contact tracing are examples of queries that express naturally as graph traversals but are expensive as multi-join SQL operations. A natural extension would be to project the \texttt{evento\_clinico} table into a property graph and evaluate the performance of graph algorithms (shortest path, community detection) on anonymised patient data.
+
+    \item \textbf{Document databases (MongoDB)}: unstructured clinical notes, imaging reports and discharge summaries are currently truncated or omitted from the relational model due to the schema's fixed structure. A document store as a complement to the relational layer would accommodate free-text clinical content with full-text search capabilities, while the relational layer retains structured event data.
+\end{itemize}
+
+\paragraph{Horizontal scalability and replication.}
+The current system is a single-node MySQL instance. A production deployment at hospital scale would require a replication topology (InnoDB Cluster or MySQL Group Replication) with read replicas for the research workload and a primary node for clinical writes. The effect of replication lag on MEMORY tables —which are local to each node— is an open engineering question worth investigating.
+
+\paragraph{Encrypted ARCHIVE tables.}
+MySQL's InnoDB tablespace encryption (\texttt{ENCRYPTION='Y'}) is well documented, but ARCHIVE engine encryption is not natively supported in all configurations. Exploring transparent disk-level encryption for ARCHIVE tables, or migrating the historical layer to a TDE-capable engine (e.g.\ Percona's TokuDB with compression), would address the regulatory requirement to protect data at rest without sacrificing the compression benefits demonstrated in this work.
+
+\paragraph{Machine learning on anonymised data.}
+The 40,000-patient dataset already contains enough signal to train basic predictive models on pseudonymised data: readmission risk, length-of-stay estimation, or early warning scores based on triage vital signs. A privacy-preserving ML pipeline that operates exclusively on the \texttt{investigador}-accessible tables would demonstrate a concrete downstream application of the GDPR-compliant architecture.
 
 \end{document}
