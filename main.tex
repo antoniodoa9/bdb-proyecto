@@ -4,9 +4,16 @@
 \usepackage{umatfgspanish}
 \usepackage{blindtext}
 
-\graphicspath{{images/}{../images/}}
+\graphicspath{{images/}{../images/}{capturas_de_pantalla/}{../capturas_de_pantalla/}}
 
 \usepackage{subfiles} % Best loaded last in the preamble
+
+%% Paquetes adicionales para la parte relacional
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{subcaption}
 
 \begin{document}
 
@@ -33,6 +40,9 @@
 %% Sections
 \section{Introducción}
 \subfile{sections/introduccion}
+
+\section{Parte~I: Base de Datos Relacional con MySQL}
+\subfile{sections/parte_relacional}
 
 \section{Conclusions and Futures Lines of Research}
 \subfile{sections/conclusion}
