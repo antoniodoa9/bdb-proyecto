@@ -8,10 +8,13 @@
 
 \usepackage{subfiles} % Best loaded last in the preamble
 
-%% Fix listings + XeLaTeX/fontspec: \ttfamily con fontspec no renderiza en listings.
-%% Se define una familia explícita y se sobreescribe basicstyle.
+%% Fix listings + XeLaTeX/fontspec: \setmonofont carga Iosevka vía fontspec pero
+%% \ttfamily no renderiza en ningún contexto (listings ni inline). Se define una
+%% familia explícita con \newfontfamily (que sí funciona) y se redirigen tanto
+%% \lstset como \texttt para usarla.
 \newfontfamily{\codefont}[Scale=0.88]{Iosevka.ttf}
 \lstset{basicstyle=\codefont\small}
+\renewcommand{\texttt}[1]{{\codefont\small #1}}
 
 %% Paquetes adicionales para la parte relacional
 \usepackage{pgfplots}
