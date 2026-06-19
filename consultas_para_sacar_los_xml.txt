@@ -47,33 +47,110 @@ ORDER BY t.nivel_triaje_manchester ASC, t.fecha_hora_llegada ASC;
 
 xquery version "3.1";
 
+let $urgencias := doc("/db/PROYECTO/urgencias_criticas_semanticas.xml")
 let $historiales := doc("/db/PROYECTO/historiales_semanticos_maximo.xml")
 let $bajas := doc("/db/PROYECTO/bajas_semanticas.xml")
 
 return
-<Impacto_Laboral_Respiratorio>
+<Informe_Pacientes>
 {
-    (: Recorremos todos los pacientes del historial clínico :)
+    (:Iteramos sobre cada paciente que está ahora mismo en urgencias :)
+    for $paciente_urg in $urgencias//Paciente_Critico
+    
+    (:Extraemos su ID y sus datos :)
+    let $id := $paciente_urg/@identificador
+    let $nivel := xs:integer($paciente_urg/Estado_Clinico_Actual/@nivel_prioridad)
+    let $motivo := $paciente_urg/Estado_Clinico_Actual/Motivo_Principal/text()
+    
+    (: Buscamos cuántos eventos tiene ese mismo ID en el historial :)
+    let $eventos := $historiales//Paciente[@id = $id]/Fichero_Eventos/Evento_Medico
+    let $num_eventos := count($eventos)
+    
+    (: Buscamos a ese mismo ID en las bajas y sumamos los días :)
+    let $bajas_paciente := $bajas//Expediente_Laboral[@id_paciente = $id]/Incapacidad_Temporal
+    let $total_dias_baja := sum($bajas_paciente/Duracion_Dias ! xs:integer(.))
+    
+    (:Filtramos para quedarnos solo con pacientes que tengan historial O bajas previas :)
+    where $num_eventos > 0 or $total_dias_baja > 0
+    
+    (: Ordenamos por gravedad del triaje (los más graves primero) :)
+    order by $nivel ascending
+    
+    (:Generamos la estructura XML de salida  :)
+    return
+    <Paciente hash_id="{$id}" prioridad_triaje="{$nivel}">
+        <Episodio_Actual>
+            <Motivo>{$motivo}</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>{$num_eventos}</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>{$total_dias_baja}</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+}
+</Informe_Pacientes>
+
+
+
+
+xquery version "3.1";
+
+let $historiales := doc("/db/PROYECTO/historiales_semanticos_maximo.xml")
+
+return
+<Pacientes_Alto_Riesgo>
+{
     for $paciente in $historiales//Paciente
     
     let $id := $paciente/@id
     let $num_eventos := count($paciente/Fichero_Eventos/Evento_Medico)
     
-    (: Buscamos las bajas de este paciente específico :)
-    let $bajas_paciente := $bajas//Expediente_Laboral[@id_paciente = $id]/Incapacidad_Temporal
-    let $total_dias := sum($bajas_paciente/Duracion_Dias ! xs:integer(.))
+    (: Filtramos a los que tienen 3 o más episodios respiratorios :)
+    where $num_eventos >= 3
     
-    (: Filtramos Solo crónicos (>=2 eventos) que además hayan causado baja :)
-    where $num_eventos >= 2 and $total_dias > 0
-    
-    (: Ordenamos por los que más días de baja acumulan :)
-    order by $total_dias descending
+    order by $num_eventos descending
     
     return
-    <Paciente_Cronico id_hash="{$id}">
-        <Total_Episodios>{$num_eventos}</Total_Episodios>
-        <Dias_Totales_Baja>{$total_dias}</Dias_Totales_Baja>
-        <Media_Dias_Por_Episodio>{round($total_dias div $num_eventos)}</Media_Dias_Por_Episodio>
+    <Paciente_Cronico>
+        <Hash_ID>{$id}</Hash_ID>
+        <Total_Episodios_Registrados>{$num_eventos}</Total_Episodios_Registrados>
+        <Nivel_Riesgo>ALTO</Nivel_Riesgo>
     </Paciente_Cronico>
 }
-</Impacto_Laboral_Respiratorio>
+</Pacientes_Alto_Riesgo>
+
+
+
+
+
+xquery version "3.1";
+
+let $urgencias := doc("/db/PROYECTO/urgencias_criticas_semanticas.xml")
+
+return
+<Monitor_Saturacion_Geriatrica>
+{
+    for $urg in $urgencias//Paciente_Critico
+    
+    let $id := $urg/@identificador
+    let $sat_str := $urg/Estado_Clinico_Actual/Saturacion_O2/text()
+    let $anio_nac := $urg/Anio_Nacimiento/text()
+    
+    (: Convertimos la saturación a decimal :)
+    let $sat_num := if ($sat_str castable as xs:double) then xs:double($sat_str) else 100.0
+    
+    (: Filtramos a los que tienen menos del 95% de oxígeno :)
+    where $sat_num < 95.0
+    
+    order by $sat_num ascending
+    
+    return
+    <Alerta_Hipoxia>
+        <Paciente_Hash>{substring($id, 1, 15)}...</Paciente_Hash>
+        <Edad_Estimada>{2026 - xs:integer($anio_nac)} años</Edad_Estimada>
+        <Nivel_Oxigeno>{$sat_num} %</Nivel_Oxigeno>
+        <Estado_Triaje>{$urg/Estado_Clinico_Actual/Motivo_Principal/text()}</Estado_Triaje>
+    </Alerta_Hipoxia>
+}
+</Monitor_Saturacion_Geriatrica>
+
