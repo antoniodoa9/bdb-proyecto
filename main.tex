@@ -4,9 +4,28 @@
 \usepackage{umatfgspanish}
 \usepackage{blindtext}
 
-\graphicspath{{images/}{../images/}}
+\graphicspath{{images/}{../images/}{capturas_de_pantalla/}{../capturas_de_pantalla/}}
 
 \usepackage{subfiles} % Best loaded last in the preamble
+
+%% Fix listings + XeLaTeX/fontspec: \setmonofont carga Iosevka vía fontspec pero
+%% \ttfamily no renderiza en ningún contexto (listings ni inline). Se define una
+%% familia explícita con \newfontfamily (que sí funciona) y se redirigen tanto
+%% \lstset como \texttt para usarla.
+\newfontfamily{\codefont}[Scale=0.88]{Iosevka.ttf}
+\lstset{basicstyle=\codefont\small}
+\renewcommand{\texttt}[1]{{\codefont\small #1}}
+
+%% Paquetes adicionales para la parte relacional
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{subcaption}
+
+%% Bibliografia (requiere biber como backend)
+\usepackage[backend=biber, style=numeric-comp, sorting=nyt, maxbibnames=6]{biblatex}
+\addbibresource{referencias.bib}
 
 \begin{document}
 
@@ -33,6 +52,9 @@
 %% Sections
 \section{Introducción}
 \subfile{sections/introduccion}
+
+\section{Parte~I: Base de Datos Relacional con MySQL}
+\subfile{sections/parte_relacional}
 
 \section{Conclusions and Futures Lines of Research}
 \subfile{sections/conclusion}

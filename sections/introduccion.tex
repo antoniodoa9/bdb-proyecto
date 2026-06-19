@@ -2,16 +2,62 @@
 
 \begin{document}
 
-\subsection{Motivación}
-\blindtext
+% ===========================================================================
+\subsection{Motivación y problemática}
+% ===========================================================================
 
-\subsection{Objetivos}
-\blindtext
+La información sanitaria tiene una característica que la distingue de casi cualquier otro tipo de dato: su valor crece con el tiempo. Un diagnóstico aislado dice poco; la secuencia de diagnósticos, ingresos, pruebas diagnósticas y tratamientos que un paciente acumula a lo largo de su vida es, en cambio, una fuente de conocimiento clínico de enorme valor tanto para su propio médico como para la investigación epidemiológica. La gestión eficiente de esa secuencia —el historial médico longitudinal— es uno de los retos técnicos más relevantes de la informática sanitaria moderna.
 
-\subsection{Estructura del documento}
-\blindtext
+A esa complejidad técnica se añade una dimensión legal que, desde 2018, resulta ineludible en cualquier país de la Unión Europea. El Reglamento General de Protección de Datos (RGPD, Reglamento UE 2016/679)~\cite{rgpd2016} clasifica los datos relativos a la salud como datos de categoría especial, cuyo tratamiento queda sujeto a requisitos reforzados. Entre ellos destaca el principio de \textbf{privacidad por diseño y por defecto}: la protección de los datos personales no puede ser una solución de parcheo que se añade sobre un sistema ya construido, sino que debe incorporarse a la arquitectura desde la primera decisión de diseño.
 
-\subsection{Tecnologías usadas}
-\blindtext
+El problema es que la mayor parte de los sistemas de información hospitalaria (HIS) actualmente en producción fueron diseñados antes de que esta exigencia existiera con el rango normativo que tiene hoy. En muchos de ellos, el nombre y el DNI de un paciente conviven en la misma tabla que sus diagnósticos, sus analíticas y sus hospitalizaciones. Esta mezcla hace prácticamente imposible realizar análisis de datos anonimizados sin primero construir capas de abstracción costosas y propensas a errores.
+
+Paralelamente, el crecimiento sostenido del volumen de datos genera un segundo problema de naturaleza técnica: el rendimiento. Las tablas de eventos clínicos de un hospital de tamaño mediano pueden contener decenas de millones de filas. Consultar esas tablas sin una estrategia de indexación y selección de motor de almacenamiento adecuada puede traducirse en tiempos de respuesta que hacen inviable el uso en tiempo real de la aplicación clínica.
+
+Este proyecto nace de la convergencia de ambas problemáticas. El punto de partida es la pregunta: ¿es posible diseñar una base de datos de historiales médicos que sea, al mismo tiempo, conforme con el RGPD por diseño y eficiente en términos de rendimiento? La respuesta que se propone y valida experimentalmente es que sí lo es, siempre que se tomen las decisiones arquitectónicas correctas desde el principio.
+
+% ===========================================================================
+\subsection{Objetivos del proyecto}
+% ===========================================================================
+
+El proyecto se estructura en torno a tres objetivos principales, que se persiguen de forma secuencial y acumulativa:
+
+\begin{enumerate}
+
+    \item \textbf{Diseñar un modelo relacional que implemente la separación de datos personales y clínicos conforme al principio de privacidad por diseño del RGPD.} La separación no debe ser una restricción de acceso a nivel de aplicación, fácilmente eludible, sino una separación física en el modelo de datos que haga imposible el acceso accidental a información identificativa desde el modelo epidemiológico. El mecanismo elegido es un \textit{hash} criptográfico SHA-256 que actúa como puente determinista entre ambos dominios.
+
+    \item \textbf{Optimizar el rendimiento mediante una arquitectura multi-motor que asigne a cada tabla el \textit{storage engine} más apropiado para su patrón concreto de acceso.} MySQL~8 permite combinar distintos motores bajo un mismo servidor. La propuesta aprovecha esta capacidad para asignar InnoDB a las tablas transaccionales, ARCHIVE al histórico de bajas médicas y MEMORY a la cola de triaje de urgencias.
+
+    \item \textbf{Validar empíricamente, mediante benchmarking controlado, el impacto de los índices y la elección de motor sobre el tiempo de respuesta y el espacio de almacenamiento.} Las decisiones de diseño no se presentan solo a nivel teórico: se cuantifican mediante mediciones repetidas sobre un conjunto de datos sintético de 40.000 pacientes, usando el \textit{Visual Explain} de MySQL Workbench y un script Python de medición estadística.
+
+\end{enumerate}
+
+% ===========================================================================
+\subsection{Tecnologías empleadas}
+% ===========================================================================
+
+La implementación se apoya sobre las siguientes herramientas y tecnologías principales:
+
+\begin{description}
+    \item[MySQL 8.0] Sistema gestor de base de datos relacional. Se utiliza en su versión 8.0, que introduce mejoras significativas en el optimizador de consultas, soporte nativo de expresiones de tabla comunes y una gestión mejorada del buffer pool de InnoDB. Su capacidad de combinar múltiples \textit{storage engines} bajo un mismo servidor es la característica decisiva para este proyecto.
+
+    \item[MySQL Workbench] Herramienta gráfica oficial de administración y modelado. Se utiliza para el diseño del modelo entidad-relación, la ejecución de consultas con análisis visual del plan de ejecución (\textit{Visual Explain}) y la inspección de estadísticas de tamaño de tabla (\textit{Table Inspector}).
+
+    \item[Python 3.12] Lenguaje de scripting para la automatización de la generación de datos y la medición estadística de tiempos de consulta. Los scripts principales son \texttt{generador\_datos\_claude.py} (población de la base de datos) y \texttt{medidor\_tiempos.py} (benchmarking).
+
+    \item[Faker \texttt{(es\_ES)}] Biblioteca Python para la generación de datos personales sintéticos localizados para España: nombres, NIFs, números de la Seguridad Social, provincias y municipios reales. Se combina con lógica de combinatoria clínica propia para producir descripciones de eventos médicos plausibles.
+
+    \item[PyMySQL] Conector Python nativo para MySQL. Gestiona las operaciones de inserción masiva y las consultas de benchmarking con soporte completo de \texttt{utf8mb4}.
+\end{description}
+
+% ===========================================================================
+\subsection{Estructura de la memoria}
+% ===========================================================================
+
+El presente documento se organiza de la siguiente manera:
+
+La \textbf{Parte~I} (Sección~2) constituye el núcleo del trabajo. Describe el diseño e implementación de la fase relacional del proyecto: el modelo de datos, la arquitectura multi-motor, la política de seguridad, el proceso de generación de datos sintéticos y la batería completa de benchmarks de rendimiento temporal y espacial. Cada decisión de diseño se acompaña de la evidencia empírica que la respalda.
+
+Las \textbf{Conclusiones} (Secciones~3 y~4) recogen los resultados más relevantes del trabajo y los ponen en perspectiva. Se discute el grado de consecución de los objetivos planteados y se proponen varias líneas de investigación futura, entre las que destaca la extensión del sistema hacia paradigmas no relacionales (bases de datos de grafos para relaciones entre pacientes, bases de datos documentales para notas clínicas sin estructura fija) como segunda fase natural del proyecto.
 
 \end{document}
