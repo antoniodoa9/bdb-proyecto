@@ -1,0 +1,803 @@
+<?xml version="1.0" ?>
+<Alerta_Urgencias_Geriatricas>
+ <Paciente_Critico identificador="041a528871284c15cfb563875a0981a0208cd4833d06944cc6aacc461fd9169b">
+  <Anio_Nacimiento>1966</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 09:29:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="d466d994ea27370ddb5c946feb0a5a4aec76de5a1a4b06652372c161e2c24018">
+  <Anio_Nacimiento>1943</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 09:35:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="1da306db2b80b1692e1e8e5dbb98338d9a86f0f6f080f55df7a284d1317f3e88">
+  <Anio_Nacimiento>1953</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 09:43:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.7</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="ee03ed87060ca93a7d202c7413876b6d23ab8b30197f061116c980318ccfa72d">
+  <Anio_Nacimiento>1947</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:09:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="6fdd09115919239134703e3f665ed67cd706f4951178d53bf724189fb74660ba">
+  <Anio_Nacimiento>1953</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:11:22</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">88.5</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="cff7e46ff76e69adacc0bcd3184fb61ed2d038daeb4d8a3d22964d5009951081">
+  <Anio_Nacimiento>1937</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:11:23</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="2bc6af902430c1aa040eb5a1df3cd7c823c92a39cfee1c7033eeacd9c485c5c7">
+  <Anio_Nacimiento>1941</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:13:23</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.7</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="6c9a2e8bd88e60e44900c93c534d8e2e323c8c664b42c3989cf8ac9fc67355aa">
+  <Anio_Nacimiento>1943</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:16:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="37d942f981c1d54b3b0b4287bd503efc43cdddd5ebdc5b1fa7885958b8329525">
+  <Anio_Nacimiento>1954</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:25:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.9</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="121ff4988c9cd76961471f4b59d7cab790dc7ac2fe9ed0452ee2e1c04c02fa41">
+  <Anio_Nacimiento>1956</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:27:23</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="2491a9a502775a9d82bc040e906c1f636eafa37327fa295f492b1d9967db3c00">
+  <Anio_Nacimiento>1959</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:35:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.8</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="47e22c981a8104c0c809a5ff838b6caf510fabf21b00510fb91245f876638858">
+  <Anio_Nacimiento>1944</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:38:23</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.5</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="abbabdfaefcba7d0fc8fc91ca90b86784027fe382abd987bc25f5f856700b65b">
+  <Anio_Nacimiento>1947</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:45:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="096c0666f3200214ae0465331b80240b08880ac3b631dcbd6c4ab7b5f4fc9e79">
+  <Anio_Nacimiento>1955</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:46:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="d077b90e336b4c3e810da5aa92a63ba78a6ebf8eb1c06e4c21910236dcc14b26">
+  <Anio_Nacimiento>1964</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:47:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="31965b2a3a5a71f4498261980431c59ef0efe2896bc2d84e911d50cd1b5529a4">
+  <Anio_Nacimiento>1948</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:55:23</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.8</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="222fa7952e1c5101ab1846a6f49325ab623fd0292f19cb21cc5ef9971db9d779">
+  <Anio_Nacimiento>1951</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 10:59:23</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="7f97328c687d42890c524dc608866c7c7bb42cb2c6deaf7c31191035640eec47">
+  <Anio_Nacimiento>1947</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 11:03:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.8</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="ca8af6e4bde58e295af77f2ce680a88d03057c3e5682e7ad5657df083ad8d4b3">
+  <Anio_Nacimiento>1948</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 11:03:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.7</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="6c0d56eb48bde19516c8c96506fa7e8f68fd4895e7a587d4e307c5063827f3e7">
+  <Anio_Nacimiento>1944</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 11:08:22</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">88.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="ec7a27b0d8a383c4298e3490ceddc02bd40297dd6c2ef43037cb11f30757562d">
+  <Anio_Nacimiento>1949</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 11:09:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="761d5447a7e0eaface9e34b5e8dc17b612b0e07621447c4bef3867d4a96a8eb1">
+  <Anio_Nacimiento>1952</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="1">
+   <Hora_Ingreso>2026-06-19 11:18:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">93.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="7c20b9ab3955fbcb787b743bd1a54d1db5805b5771f59299eec982cf6de4b969">
+  <Anio_Nacimiento>1943</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:32:23</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="ae88607e8db9fc7514c8e9045db251a561c43b5ba07e76484a843e5b0af0c571">
+  <Anio_Nacimiento>1942</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:32:23</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="072e83a59fc84b72a63f01d5b4392a81bf66a789a2a779e33e11480bcbfd0f54">
+  <Anio_Nacimiento>1940</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:33:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="208f683197a8005395d9d14e44ccb2dba755a0b6da198b4553dd5f6371594dd1">
+  <Anio_Nacimiento>1955</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:33:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="5dd8dc82291f61290a890dd328bdc42c9c85ae0725689fbb6a64edf6e6aeaa47">
+  <Anio_Nacimiento>1950</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:34:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="ccc301c19ee0889a2a23cef5a8b2520492d503850444d509a0d127a403992fc0">
+  <Anio_Nacimiento>1953</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:34:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="758ecf48d2eb85480e7ca872ebb79758cf4375d7085c576a7725b4e03f111cc8">
+  <Anio_Nacimiento>1945</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:35:23</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.7</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="9c9de18adb580c3158a79c29b4277abeedc3c500a178ca2ae88689365e973d34">
+  <Anio_Nacimiento>1955</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:44:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="b90e8af23528a72403a2be67a9574e2f11bec43fd0b7ac3ac5354f5164520db9">
+  <Anio_Nacimiento>1939</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:45:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="ede4db37059c8b3cb155a870d73554eb1642267cd61fbfb861306545c6e6d885">
+  <Anio_Nacimiento>1950</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:45:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">88.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="3c026800fdd89ee40c4d01e667803e35e74311792123b477a156b3429b3d1ad6">
+  <Anio_Nacimiento>1956</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:46:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="165224236e580ac83e86d98a18f3d7da1ebed1d334deff7fa8c0a151eed50520">
+  <Anio_Nacimiento>1937</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:47:23</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">88.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="7bbdc4891d13a5190cfd3e7831465b89251750d68355cbc6697b90bffed7c6dd">
+  <Anio_Nacimiento>1936</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:48:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.5</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="f9bcda18beb57bbbe3e164e5d051c0bbaeb37e8a8164f5829b5d6d88185a1f4b">
+  <Anio_Nacimiento>1944</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:49:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="1502d22109d0242dfe16a5aefc06f3ef104b72a1e59f7c7bd452e1ff488e7467">
+  <Anio_Nacimiento>1956</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:49:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.7</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="a05df592e80bddb6378e5eb0de93a9d645b3125c18d386bd3e4833020ac8058b">
+  <Anio_Nacimiento>1959</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:50:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="7a8e1a4a877b3e9e66b368014e80210b2788715ebf6b033b6aa76c21199ee0c2">
+  <Anio_Nacimiento>1953</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:56:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.2</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="bc80ef842fed6fb27b9a32c2229e603a31f49327d8d9119413885ca91f2e7083">
+  <Anio_Nacimiento>1958</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 09:58:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="9bab6fff28b23cf30ae3299f5bdf115c137dd3c54d3e6e4d44e8a9c700235b31">
+  <Anio_Nacimiento>1962</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:04:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="63185821a337eea877bdf58c204b809a62e895e0a5e201296d687d43c6a6d6e2">
+  <Anio_Nacimiento>1954</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:05:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="b4ed02e182739b77ade74bca1e20c663b49de6601c1def8a7c609ef94868089e">
+  <Anio_Nacimiento>1950</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:05:23</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="f45ab29eed4cb7f0bb5c922e38bda0cdceed5041cb66857aad956acb01b7c5ef">
+  <Anio_Nacimiento>1945</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:05:23</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="78bcb78857169c2788629d1e3513cef2bb0cba12a17bc974291195121ed14e17">
+  <Anio_Nacimiento>1946</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:07:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">88.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="2fe6dbcecda75a3dad3e9976be98646dff4b714586826cd2c78bbb94bd041dc4">
+  <Anio_Nacimiento>1951</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:08:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="d9a06eb4c9ef86a815a783e8db710ac361dced0167232a5caf116e93f72f9311">
+  <Anio_Nacimiento>1962</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:10:23</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="e7fae51e586a8d9f5394867d6a56b379b8289791a676484d9cfca5fe8d6077c9">
+  <Anio_Nacimiento>1942</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:13:23</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.9</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="0c8841329bc05ea8d3c1391d463f19da0bf11271a581dd546e23ea3ea217d001">
+  <Anio_Nacimiento>1949</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:15:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="b418cfab91deffe9127734358e7fb83319fddc89e8e8b57a2179638ffc36b3c8">
+  <Anio_Nacimiento>1965</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:16:22</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="113fa519fe98e5c5063e95ce646d882f24db4eadc4c2a60e2b89be3ff4a666ad">
+  <Anio_Nacimiento>1945</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:16:23</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.4</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="a075e242351e30d3154bd69e7bdc29e31951089830614daf632528e867147f4b">
+  <Anio_Nacimiento>1936</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:20:23</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.8</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="0683bf3c3eca2e9f18b5c8ff7aa0d9f8532f006a9d2c3fa3821b0c49e5853d36">
+  <Anio_Nacimiento>1962</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:21:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="b5b3c0a8ae1b7c7103d689431a232be1818b8ce424237cd854f22ddd259cf986">
+  <Anio_Nacimiento>1935</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:22:23</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="d5e4864a089a3ada491ae7a0b94ed8178617219f671f4fc3e980235e79d0b310">
+  <Anio_Nacimiento>1947</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:24:23</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="e647fc69ed6aeadefb430842c729b076d80a70258392276fa980756df74ec982">
+  <Anio_Nacimiento>1952</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:32:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="a153fbac9e9e90826abe1e42f05d8602c434c93ddbf08881818f34b4079bcc27">
+  <Anio_Nacimiento>1958</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:34:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">92.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="20939a4563d0b0707cc6264e762c4377585baaae7643ee98731571767848386e">
+  <Anio_Nacimiento>1963</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:35:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="b86085d856dca3f70a58d46b859507ea4449981c49af5c82e6fc0887731f2b7a">
+  <Anio_Nacimiento>1935</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:44:23</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">89.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="24f711e78b9a0bce97f61be4f9415fa2ec3e7be504d43b7a4fb47c138ee913ff">
+  <Anio_Nacimiento>1953</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:45:23</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="ee068337b69d37a680be4681350e52960b2552980260668c8fe03bfa90272702">
+  <Anio_Nacimiento>1951</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:46:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="8fd8fe51449d43a07bda77533ec7a565522cba2defe9c7c9e356ca4809dacaac">
+  <Anio_Nacimiento>1965</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:50:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="145dfd4f03a662cffd4284aa3f1397718b0d05e25ff77c313028109b83c4034f">
+  <Anio_Nacimiento>1939</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:54:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.5</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="b2ea80aa140744c74070e5b68b292a867803b52a6122e15f24da3607fc83a9ae">
+  <Anio_Nacimiento>1953</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:54:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="544ab99817a46f170b4334260fee743bc58d90e69f3819133887d95c619ee046">
+  <Anio_Nacimiento>1943</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:56:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">90.9</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="8835e6244631156943fed63e41e9b767f60d268ae7c8032ef097a68586a4c9f9">
+  <Anio_Nacimiento>1944</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:56:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.8</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="7833941543e292bed9b09610cd4c2191907d4707be74daed4ad59cfdabecf179">
+  <Anio_Nacimiento>1953</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:56:23</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.9</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="5ff264deccb229e3be71f42ed73e5574375ebffaa6a400c05ba47ee42ca311ab">
+  <Anio_Nacimiento>1940</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:57:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.7</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="685432f76b58a1f6e1eaaf6a71737dffe2ba4d03be6974be77e27e68afd2d2ab">
+  <Anio_Nacimiento>1955</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:58:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="0a8c9b3a72c073841f0b6817f7a14e2682fb099c07e2f8bae19da76ce7e8cdab">
+  <Anio_Nacimiento>1964</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:58:23</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="6633f14c4cead418c33c3373e7f07c7eb38b84def1ac06f0299d13696fe801f2">
+  <Anio_Nacimiento>1940</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:59:22</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="a4dc32321f1200f61545daae6e31410ac76a67b6500d450096f2bb8aebcfd3e6">
+  <Anio_Nacimiento>1961</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 10:59:22</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.5</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="f8dfceee098ec03eb9fcac9bac4c3488754ab47c77edf49411cfc6d35da68600">
+  <Anio_Nacimiento>1956</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:04:22</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.0</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="a814b0b1b5eff04260ffcddc9f45b1def3cacc24c0f51b38aa5509104bb0e4c2">
+  <Anio_Nacimiento>1952</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:05:22</Hora_Ingreso>
+   <Motivo_Principal>Déficit neurológico focal de inicio súbito.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">86.3</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="9e1715e9ab10c94d72c61131ffbe132d66fe5596e67008184d133f6f8971edf0">
+  <Anio_Nacimiento>1958</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:06:22</Hora_Ingreso>
+   <Motivo_Principal>Síncope en domicilio. Palpitaciones previas.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.8</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="260de9d51b875a2d35c316e8ad451b66057a880ea9c973d4835ed1b793ee63c1">
+  <Anio_Nacimiento>1962</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:07:22</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.1</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="87deca46c7abae0940e6c782bb58c4d5424f3ca9f85edcf6fc40f2848bd0ca72">
+  <Anio_Nacimiento>1963</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:09:23</Hora_Ingreso>
+   <Motivo_Principal>Disnea aguda y dolor torácico.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.7</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="1fb5e8dcc7ea79dbb220bfb19c1a562ed28d42bd85023a60e8b4787f6a8ee248">
+  <Anio_Nacimiento>1935</Anio_Nacimiento>
+  <Sexo>F</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:12:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">91.9</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="917fd07f8071aedd855216de6125a47db9f29e0b99c963b8f2c4d51da6b66aec">
+  <Anio_Nacimiento>1949</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:14:23</Hora_Ingreso>
+   <Motivo_Principal>Fiebre alta, tos productiva y desaturación.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">85.6</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+ <Paciente_Critico identificador="323050c306212680e700c40275b99c923a26189e7fb58c119bfd7fe4ea10a6e0">
+  <Anio_Nacimiento>1950</Anio_Nacimiento>
+  <Sexo>M</Sexo>
+  <Estado_Clinico_Actual nivel_prioridad="2">
+   <Hora_Ingreso>2026-06-19 11:15:22</Hora_Ingreso>
+   <Motivo_Principal>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo_Principal>
+   <Saturacion_O2 unidad="%">87.9</Saturacion_O2>
+   <Fase_Asistencia>En_Espera</Fase_Asistencia>
+  </Estado_Clinico_Actual>
+ </Paciente_Critico>
+</Alerta_Urgencias_Geriatricas>

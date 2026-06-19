@@ -1,0 +1,482 @@
+<Monitor_Saturacion_Geriatrica>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>a05df592e80bddb...</Paciente_Hash>
+        <Edad_Estimada>67 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>b2ea80aa140744c...</Paciente_Hash>
+        <Edad_Estimada>73 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>d5e4864a089a3ad...</Paciente_Hash>
+        <Edad_Estimada>79 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>7c20b9ab3955fbc...</Paciente_Hash>
+        <Edad_Estimada>83 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>0683bf3c3eca2e9...</Paciente_Hash>
+        <Edad_Estimada>64 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>917fd07f8071aed...</Paciente_Hash>
+        <Edad_Estimada>77 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>2bc6af902430c1a...</Paciente_Hash>
+        <Edad_Estimada>85 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.7 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>9e1715e9ab10c94...</Paciente_Hash>
+        <Edad_Estimada>68 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.8 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>7833941543e292b...</Paciente_Hash>
+        <Edad_Estimada>73 años</Edad_Estimada>
+        <Nivel_Oxigeno>85.9 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>208f683197a8005...</Paciente_Hash>
+        <Edad_Estimada>71 años</Edad_Estimada>
+        <Nivel_Oxigeno>86 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>041a528871284c1...</Paciente_Hash>
+        <Edad_Estimada>60 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>d466d994ea27370...</Paciente_Hash>
+        <Edad_Estimada>83 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>a814b0b1b5eff04...</Paciente_Hash>
+        <Edad_Estimada>74 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>ec7a27b0d8a383c...</Paciente_Hash>
+        <Edad_Estimada>77 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>072e83a59fc84b7...</Paciente_Hash>
+        <Edad_Estimada>86 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>b90e8af23528a72...</Paciente_Hash>
+        <Edad_Estimada>87 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>0c8841329bc05ea...</Paciente_Hash>
+        <Edad_Estimada>77 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>a4dc32321f1200f...</Paciente_Hash>
+        <Edad_Estimada>65 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.5 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>3c026800fdd89ee...</Paciente_Hash>
+        <Edad_Estimada>70 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>20939a4563d0b07...</Paciente_Hash>
+        <Edad_Estimada>63 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>0a8c9b3a72c0738...</Paciente_Hash>
+        <Edad_Estimada>62 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>5ff264deccb229e...</Paciente_Hash>
+        <Edad_Estimada>86 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.7 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>8835e6244631156...</Paciente_Hash>
+        <Edad_Estimada>82 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.8 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>37d942f981c1d54...</Paciente_Hash>
+        <Edad_Estimada>72 años</Edad_Estimada>
+        <Nivel_Oxigeno>86.9 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>f8dfceee098ec03...</Paciente_Hash>
+        <Edad_Estimada>70 años</Edad_Estimada>
+        <Nivel_Oxigeno>87 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>6633f14c4cead41...</Paciente_Hash>
+        <Edad_Estimada>86 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>abbabdfaefcba7d...</Paciente_Hash>
+        <Edad_Estimada>79 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>ccc301c19ee0889...</Paciente_Hash>
+        <Edad_Estimada>73 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>7a8e1a4a877b3e9...</Paciente_Hash>
+        <Edad_Estimada>73 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>9c9de18adb580c3...</Paciente_Hash>
+        <Edad_Estimada>71 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>b418cfab91deffe...</Paciente_Hash>
+        <Edad_Estimada>61 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>113fa519fe98e5c...</Paciente_Hash>
+        <Edad_Estimada>81 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>47e22c981a8104c...</Paciente_Hash>
+        <Edad_Estimada>82 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.5 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>145dfd4f03a662c...</Paciente_Hash>
+        <Edad_Estimada>87 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.5 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>ca8af6e4bde58e2...</Paciente_Hash>
+        <Edad_Estimada>78 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.7 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>87deca46c7abae0...</Paciente_Hash>
+        <Edad_Estimada>63 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.7 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>323050c30621268...</Paciente_Hash>
+        <Edad_Estimada>76 años</Edad_Estimada>
+        <Nivel_Oxigeno>87.9 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>ede4db37059c8b3...</Paciente_Hash>
+        <Edad_Estimada>76 años</Edad_Estimada>
+        <Nivel_Oxigeno>88.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>78bcb78857169c2...</Paciente_Hash>
+        <Edad_Estimada>80 años</Edad_Estimada>
+        <Nivel_Oxigeno>88.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>6fdd09115919239...</Paciente_Hash>
+        <Edad_Estimada>73 años</Edad_Estimada>
+        <Nivel_Oxigeno>88.5 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>6c0d56eb48bde19...</Paciente_Hash>
+        <Edad_Estimada>82 años</Edad_Estimada>
+        <Nivel_Oxigeno>88.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Déficit neurológico focal de inicio súbito.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>165224236e580ac...</Paciente_Hash>
+        <Edad_Estimada>89 años</Edad_Estimada>
+        <Nivel_Oxigeno>88.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>6c9a2e8bd88e60e...</Paciente_Hash>
+        <Edad_Estimada>83 años</Edad_Estimada>
+        <Nivel_Oxigeno>89 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>2fe6dbcecda75a3...</Paciente_Hash>
+        <Edad_Estimada>75 años</Edad_Estimada>
+        <Nivel_Oxigeno>89 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>b5b3c0a8ae1b7c7...</Paciente_Hash>
+        <Edad_Estimada>91 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>ee03ed87060ca93...</Paciente_Hash>
+        <Edad_Estimada>79 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>121ff4988c9cd76...</Paciente_Hash>
+        <Edad_Estimada>70 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>096c0666f320021...</Paciente_Hash>
+        <Edad_Estimada>71 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>63185821a337eea...</Paciente_Hash>
+        <Edad_Estimada>72 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>b86085d856dca3f...</Paciente_Hash>
+        <Edad_Estimada>91 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>bc80ef842fed6fb...</Paciente_Hash>
+        <Edad_Estimada>68 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.4 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>1da306db2b80b16...</Paciente_Hash>
+        <Edad_Estimada>73 años</Edad_Estimada>
+        <Nivel_Oxigeno>89.7 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>d077b90e336b4c3...</Paciente_Hash>
+        <Edad_Estimada>62 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>24f711e78b9a0bc...</Paciente_Hash>
+        <Edad_Estimada>73 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>5dd8dc82291f612...</Paciente_Hash>
+        <Edad_Estimada>76 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.2 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>ae88607e8db9fc7...</Paciente_Hash>
+        <Edad_Estimada>84 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>e647fc69ed6aead...</Paciente_Hash>
+        <Edad_Estimada>74 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>f9bcda18beb57bb...</Paciente_Hash>
+        <Edad_Estimada>82 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>d9a06eb4c9ef86a...</Paciente_Hash>
+        <Edad_Estimada>64 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>ee068337b69d37a...</Paciente_Hash>
+        <Edad_Estimada>75 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>1502d22109d0242...</Paciente_Hash>
+        <Edad_Estimada>70 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.7 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>544ab99817a46f1...</Paciente_Hash>
+        <Edad_Estimada>83 años</Edad_Estimada>
+        <Nivel_Oxigeno>90.9 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>cff7e46ff76e69a...</Paciente_Hash>
+        <Edad_Estimada>89 años</Edad_Estimada>
+        <Nivel_Oxigeno>91 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>8fd8fe51449d43a...</Paciente_Hash>
+        <Edad_Estimada>61 años</Edad_Estimada>
+        <Nivel_Oxigeno>91 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>9bab6fff28b23cf...</Paciente_Hash>
+        <Edad_Estimada>64 años</Edad_Estimada>
+        <Nivel_Oxigeno>91.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>685432f76b58a1f...</Paciente_Hash>
+        <Edad_Estimada>71 años</Edad_Estimada>
+        <Nivel_Oxigeno>91.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>260de9d51b875a2...</Paciente_Hash>
+        <Edad_Estimada>64 años</Edad_Estimada>
+        <Nivel_Oxigeno>91.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>7bbdc4891d13a51...</Paciente_Hash>
+        <Edad_Estimada>90 años</Edad_Estimada>
+        <Nivel_Oxigeno>91.5 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>222fa7952e1c510...</Paciente_Hash>
+        <Edad_Estimada>75 años</Edad_Estimada>
+        <Nivel_Oxigeno>91.6 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>31965b2a3a5a71f...</Paciente_Hash>
+        <Edad_Estimada>78 años</Edad_Estimada>
+        <Nivel_Oxigeno>91.8 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>1fb5e8dcc7ea79d...</Paciente_Hash>
+        <Edad_Estimada>91 años</Edad_Estimada>
+        <Nivel_Oxigeno>91.9 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>a153fbac9e9e908...</Paciente_Hash>
+        <Edad_Estimada>68 años</Edad_Estimada>
+        <Nivel_Oxigeno>92 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>b4ed02e182739b7...</Paciente_Hash>
+        <Edad_Estimada>76 años</Edad_Estimada>
+        <Nivel_Oxigeno>92.1 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>f45ab29eed4cb7f...</Paciente_Hash>
+        <Edad_Estimada>81 años</Edad_Estimada>
+        <Nivel_Oxigeno>92.3 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>758ecf48d2eb854...</Paciente_Hash>
+        <Edad_Estimada>81 años</Edad_Estimada>
+        <Nivel_Oxigeno>92.7 %</Nivel_Oxigeno>
+        <Estado_Triaje>Disnea aguda y dolor torácico.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>2491a9a502775a9...</Paciente_Hash>
+        <Edad_Estimada>67 años</Edad_Estimada>
+        <Nivel_Oxigeno>92.8 %</Nivel_Oxigeno>
+        <Estado_Triaje>Síncope en domicilio. Palpitaciones previas.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>7f97328c687d428...</Paciente_Hash>
+        <Edad_Estimada>79 años</Edad_Estimada>
+        <Nivel_Oxigeno>92.8 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>a075e242351e30d...</Paciente_Hash>
+        <Edad_Estimada>90 años</Edad_Estimada>
+        <Nivel_Oxigeno>92.8 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>e7fae51e586a8d9...</Paciente_Hash>
+        <Edad_Estimada>84 años</Edad_Estimada>
+        <Nivel_Oxigeno>92.9 %</Nivel_Oxigeno>
+        <Estado_Triaje>Exacerbación EPOC. Trabajo respiratorio aumentado.</Estado_Triaje>
+    </Alerta_Hipoxia>
+    <Alerta_Hipoxia>
+        <Paciente_Hash>761d5447a7e0eaf...</Paciente_Hash>
+        <Edad_Estimada>74 años</Edad_Estimada>
+        <Nivel_Oxigeno>93 %</Nivel_Oxigeno>
+        <Estado_Triaje>Fiebre alta, tos productiva y desaturación.</Estado_Triaje>
+    </Alerta_Hipoxia>
+</Monitor_Saturacion_Geriatrica>

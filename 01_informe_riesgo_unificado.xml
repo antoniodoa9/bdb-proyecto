@@ -1,0 +1,371 @@
+<Informe_Pacientes>
+    <Paciente hash_id="041a528871284c15cfb563875a0981a0208cd4833d06944cc6aacc461fd9169b" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="ee03ed87060ca93a7d202c7413876b6d23ab8b30197f061116c980318ccfa72d" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="2bc6af902430c1aa040eb5a1df3cd7c823c92a39cfee1c7033eeacd9c485c5c7" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>17</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="6c9a2e8bd88e60e44900c93c534d8e2e323c8c664b42c3989cf8ac9fc67355aa" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="2491a9a502775a9d82bc040e906c1f636eafa37327fa295f492b1d9967db3c00" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="47e22c981a8104c0c809a5ff838b6caf510fabf21b00510fb91245f876638858" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Déficit neurológico focal de inicio súbito.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="abbabdfaefcba7d0fc8fc91ca90b86784027fe382abd987bc25f5f856700b65b" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="096c0666f3200214ae0465331b80240b08880ac3b631dcbd6c4ab7b5f4fc9e79" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Disnea aguda y dolor torácico.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="d077b90e336b4c3e810da5aa92a63ba78a6ebf8eb1c06e4c21910236dcc14b26" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="7f97328c687d42890c524dc608866c7c7bb42cb2c6deaf7c31191035640eec47" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="ca8af6e4bde58e295af77f2ce680a88d03057c3e5682e7ad5657df083ad8d4b3" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="6c0d56eb48bde19516c8c96506fa7e8f68fd4895e7a587d4e307c5063827f3e7" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Déficit neurológico focal de inicio súbito.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="ec7a27b0d8a383c4298e3490ceddc02bd40297dd6c2ef43037cb11f30757562d" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>0</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>30</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="761d5447a7e0eaface9e34b5e8dc17b612b0e07621447c4bef3867d4a96a8eb1" prioridad_triaje="1">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="ae88607e8db9fc7514c8e9045db251a561c43b5ba07e76484a843e5b0af0c571" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="072e83a59fc84b72a63f01d5b4392a81bf66a789a2a779e33e11480bcbfd0f54" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Disnea aguda y dolor torácico.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>0</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>37</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="9c9de18adb580c3158a79c29b4277abeedc3c500a178ca2ae88689365e973d34" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="b90e8af23528a72403a2be67a9574e2f11bec43fd0b7ac3ac5354f5164520db9" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="3c026800fdd89ee40c4d01e667803e35e74311792123b477a156b3429b3d1ad6" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="165224236e580ac83e86d98a18f3d7da1ebed1d334deff7fa8c0a151eed50520" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Disnea aguda y dolor torácico.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>0</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>25</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="f9bcda18beb57bbbe3e164e5d051c0bbaeb37e8a8164f5829b5d6d88185a1f4b" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="a05df592e80bddb6378e5eb0de93a9d645b3125c18d386bd3e4833020ac8058b" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="63185821a337eea877bdf58c204b809a62e895e0a5e201296d687d43c6a6d6e2" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="f45ab29eed4cb7f0bb5c922e38bda0cdceed5041cb66857aad956acb01b7c5ef" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Disnea aguda y dolor torácico.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="2fe6dbcecda75a3dad3e9976be98646dff4b714586826cd2c78bbb94bd041dc4" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="b418cfab91deffe9127734358e7fb83319fddc89e8e8b57a2179638ffc36b3c8" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Déficit neurológico focal de inicio súbito.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="113fa519fe98e5c5063e95ce646d882f24db4eadc4c2a60e2b89be3ff4a666ad" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="a075e242351e30d3154bd69e7bdc29e31951089830614daf632528e867147f4b" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="0683bf3c3eca2e9f18b5c8ff7aa0d9f8532f006a9d2c3fa3821b0c49e5853d36" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="d5e4864a089a3ada491ae7a0b94ed8178617219f671f4fc3e980235e79d0b310" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="b86085d856dca3f70a58d46b859507ea4449981c49af5c82e6fc0887731f2b7a" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="ee068337b69d37a680be4681350e52960b2552980260668c8fe03bfa90272702" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>71</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="145dfd4f03a662cffd4284aa3f1397718b0d05e25ff77c313028109b83c4034f" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="8835e6244631156943fed63e41e9b767f60d268ae7c8032ef097a68586a4c9f9" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="7833941543e292bed9b09610cd4c2191907d4707be74daed4ad59cfdabecf179" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>0</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>37</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="6633f14c4cead418c33c3373e7f07c7eb38b84def1ac06f0299d13696fe801f2" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Disnea aguda y dolor torácico.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="a4dc32321f1200f61545daae6e31410ac76a67b6500d450096f2bb8aebcfd3e6" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Déficit neurológico focal de inicio súbito.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="a814b0b1b5eff04260ffcddc9f45b1def3cacc24c0f51b38aa5509104bb0e4c2" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Déficit neurológico focal de inicio súbito.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="9e1715e9ab10c94d72c61131ffbe132d66fe5596e67008184d133f6f8971edf0" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Síncope en domicilio. Palpitaciones previas.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="1fb5e8dcc7ea79dbb220bfb19c1a562ed28d42bd85023a60e8b4787f6a8ee248" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Exacerbación EPOC. Trabajo respiratorio aumentado.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>2</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+    <Paciente hash_id="917fd07f8071aedd855216de6125a47db9f29e0b99c963b8f2c4d51da6b66aec" prioridad_triaje="2">
+        <Episodio_Actual>
+            <Motivo>Fiebre alta, tos productiva y desaturación.</Motivo>
+        </Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>1</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>0</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+</Informe_Pacientes>
