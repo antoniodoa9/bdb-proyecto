@@ -1,0 +1,230 @@
+from pymongo import MongoClient
+
+# Requires the PyMongo package.
+# https://api.mongodb.com/python/current
+
+client = MongoClient('mongodb+srv://antoniodoa9:root@cluster0.wcpugac.mongodb.net/')
+result = client['PROYECTO']['pacientes_externos'].aggregate([
+    {
+        '$lookup': {
+            'from': 'guias_clinicas', 
+            'localField': 'diagnostico_principal', 
+            'foreignField': 'codigo_cie10', 
+            'as': 'guia_aplicada'
+        }
+    }, {
+        '$match': {
+            'guia_aplicada': {
+                '$ne': []
+            }
+        }
+    }, {
+        '$unwind': {
+            'path': '$guia_aplicada'
+        }
+    }, {
+        '$project': {
+            '_id': 0, 
+            'id_paciente': 1, 
+            'fecha_ingreso': 1, 
+            'diagnostico': '$descripcion_patologia', 
+            'fuente_protocolo': '$guia_aplicada.fuente_externa', 
+            'medicacion_primera_linea': '$guia_aplicada.protocolo_tratamiento.primera_linea'
+        }
+    }
+])
+
+
+
+from pymongo import MongoClient
+
+# Requires the PyMongo package.
+# https://api.mongodb.com/python/current
+
+client = MongoClient('mongodb+srv://antoniodoa9:root@cluster0.wcpugac.mongodb.net/')
+result = client['PROYECTO']['pacientes_externos'].aggregate([
+    {
+        '$match': {
+            'anio_nacimiento': {
+                '$lte': 1956
+            }
+        }
+    }, {
+        '$lookup': {
+            'from': 'guias_clinicas', 
+            'localField': 'diagnostico_principal', 
+            'foreignField': 'codigo_cie10', 
+            'as': 'guia_aplicada'
+        }
+    }, {
+        '$unwind': {
+            'path': '$guia_aplicada'
+        }
+    }, {
+        '$match': {
+            'guia_aplicada.protocolo_tratamiento.criterios_ingreso': {
+                '$exists': 'True'
+            }
+        }
+    }, {
+        '$project': {
+            '_id': 0, 
+            'id_paciente': 1, 
+            'edad_estimada': {
+                '$subtract': [
+                    2026, '$anio_nacimiento'
+                ]
+            }, 
+            'diagnostico': '$descripcion_patologia', 
+            'criterios_para_ingreso': '$guia_aplicada.protocolo_tratamiento.criterios_ingreso'
+        }
+    }, {
+        '$sort': {
+            'edad_estimada': -1
+        }
+    }
+])
+
+
+
+from pymongo import MongoClient
+
+# Requires the PyMongo package.
+# https://api.mongodb.com/python/current
+
+client = MongoClient('mongodb+srv://antoniodoa9:root@cluster0.wcpugac.mongodb.net/')
+result = client['PROYECTO']['pacientes_externos'].aggregate([
+    {
+        '$lookup': {
+            'from': 'guias_clinicas', 
+            'localField': 'diagnostico_principal', 
+            'foreignField': 'codigo_cie10', 
+            'as': 'guia_aplicada'
+        }
+    }, {
+        '$unwind': {
+            'path': '$guia_aplicada'
+        }
+    }, {
+        '$group': {
+            '_id': {
+                'especialidad': '$guia_aplicada.especialidad_referencia', 
+                'patologia': '$guia_aplicada.enfermedad'
+            }, 
+            'total_pacientes': {
+                '$sum': 1
+            }, 
+            'edad_media': {
+                '$avg': {
+                    '$subtract': [
+                        2026, '$anio_nacimiento'
+                    ]
+                }
+            }
+        }
+    }, {
+        '$sort': {
+            'total_pacientes': -1
+        }
+    }, {
+        '$project': {
+            '_id': 0, 
+            'departamento': '$_id.especialidad', 
+            'patologia': '$_id.patologia', 
+            'carga_pacientes': '$total_pacientes', 
+            'edad_media': {
+                '$round': [
+                    '$edad_media', 1
+                ]
+            }
+        }
+    }
+])
+
+
+from pymongo import MongoClient
+
+# Requires the PyMongo package.
+# https://api.mongodb.com/python/current
+
+client = MongoClient('mongodb+srv://antoniodoa9:root@cluster0.wcpugac.mongodb.net/')
+result = client['PROYECTO']['pacientes_externos'].aggregate([
+    {
+        '$lookup': {
+            'from': 'guias_clinicas', 
+            'localField': 'diagnostico_principal', 
+            'foreignField': 'codigo_cie10', 
+            'as': 'guia'
+        }
+    }, {
+        '$unwind': {
+            'path': '$guia'
+        }
+    }, {
+        '$addFields': {
+            'edad': {
+                '$subtract': [
+                    2026, '$anio_nacimiento'
+                ]
+            }
+        }
+    }, {
+        '$bucket': {
+            'groupBy': '$edad', 
+            'boundaries': [
+                0, 18, 45, 65, 120
+            ], 
+            'default': 'Edad desconocida', 
+            'output': {
+                'total_pacientes_riesgo': {
+                    '$sum': 1
+                }, 
+                'patologias_frecuentes': {
+                    '$addToSet': '$guia.enfermedad'
+                }
+            }
+        }
+    }, {
+        '$project': {
+            '_id': 0, 
+            'cohorte': {
+                '$switch': {
+                    'branches': [
+                        {
+                            'case': {
+                                '$eq': [
+                                    '$_id', 0
+                                ]
+                            }, 
+                            'then': 'Pediatría (0-17 años)'
+                        }, {
+                            'case': {
+                                '$eq': [
+                                    '$_id', 18
+                                ]
+                            }, 
+                            'then': 'Adulto joven (18-44 años)'
+                        }, {
+                            'case': {
+                                '$eq': [
+                                    '$_id', 45
+                                ]
+                            }, 
+                            'then': 'Adulto maduro (45-64 años)'
+                        }, {
+                            'case': {
+                                '$eq': [
+                                    '$_id', 65
+                                ]
+                            }, 
+                            'then': 'Geriatría (65+ años)'
+                        }
+                    ], 
+                    'default': 'Cohorte desconocida'
+                }
+            }, 
+            'total_pacientes': '$total_pacientes_riesgo', 
+            'patologias_registradas': '$patologias_frecuentes'
+        }
+    }
+])

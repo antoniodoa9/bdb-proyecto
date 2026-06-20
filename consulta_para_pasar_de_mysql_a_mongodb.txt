@@ -1,0 +1,14 @@
+USE PROYECTO;
+
+SELECT 
+    pa.codigo_hash AS id_paciente,
+    pa.anio_nacimiento,
+    pa.sexo_biologico,
+    ec.fecha_evento AS fecha_ingreso,
+    ec.codigo_cie10 AS diagnostico_principal,
+    ec.descripcion_cie10 AS descripcion_patologia,
+    ec.especialidad AS especialidad,
+    ec.centro_sanitario AS centro_sanitario
+FROM paciente_anonimo pa
+INNER JOIN evento_clinico ec ON pa.id_paciente = ec.id_paciente
+ORDER BY ec.fecha_evento DESC
