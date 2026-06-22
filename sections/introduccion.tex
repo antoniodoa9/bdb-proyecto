@@ -34,7 +34,7 @@ El proyecto se estructura en torno a cinco objetivos principales, que se persigu
 
     \item \textbf{Llevar los mismos datos a un modelo semiestructurado XML y explotarlos con XQuery sobre una base de datos nativa (eXist-db).} Se trata de aprovechar la naturaleza jerárquica del historial clínico para construir documentos con sentido y, sobre ellos, consultas FLWOR que funcionen como apoyo a la decisión clínica (triangulación de riesgo, detección de crónicos y alertas de hipoxia).
 
-    \item \textbf{Construir una arquitectura híbrida con MongoDB que aplique guías clínicas a los pacientes y exponerla en una interfaz gráfica.} El objetivo es demostrar que MySQL (transaccional) y MongoDB (documental) pueden convivir, modelar el conocimiento clínico como documentos JSON, cruzarlo con los pacientes mediante \textit{aggregation pipelines} y rematar el sistema con una aplicación de escritorio que actúe como sistema de soporte a la decisión clínica.
+    \item \textbf{Construir una arquitectura híbrida con MongoDB que aplique guías clínicas a los pacientes y exponerla en una interfaz gráfica.} El objetivo es demostrar que MySQL (transaccional) y MongoDB (documental) pueden convivir, modelar el conocimiento clínico como documentos BSON, cruzarlo con los pacientes mediante \textit{aggregation pipelines} y rematar el sistema con una aplicación de escritorio que actúe como sistema de soporte a la decisión clínica.
 
 \end{enumerate}
 
@@ -52,7 +52,7 @@ La \textbf{Parte~I} (Sección~3) constituye el núcleo relacional del trabajo. D
 
 La \textbf{Parte~II} (Sección~4) da el salto a las bases de datos semiestructuradas. Explica cómo exportamos los datos relacionales a XML, cómo los reestructuramos con Python para darles una jerarquía clínica con sentido y cómo, una vez cargados en eXist-db, los interrogamos con XQuery para construir tres herramientas de apoyo a la decisión clínica.
 
-La \textbf{Parte~III} (Sección~5) presenta la arquitectura híbrida con MongoDB. Justifica la convivencia de lo relacional y lo documental, el enfoque de privacidad desde el diseño en la carga masiva de datos, el modelado de las guías clínicas en JSON, el análisis de rendimiento con índices y, por último, la interfaz gráfica que integra todo el sistema.
+La \textbf{Parte~III} (Sección~5) presenta la arquitectura híbrida con MongoDB. Justifica la convivencia de lo relacional y lo documental, el enfoque de privacidad desde el diseño en la carga masiva de datos, el modelado de las guías clínicas en BSON, el análisis de rendimiento con índices y, por último, la interfaz gráfica que integra todo el sistema.
 
 Las \textbf{Conclusiones} (Secciones~6 y~7) recogen los resultados más relevantes del trabajo y los ponen en perspectiva, discuten el grado de consecución de los objetivos y proponen líneas de investigación futura.
 
