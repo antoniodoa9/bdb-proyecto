@@ -64,6 +64,17 @@ La generación de un volumen de datos lo suficientemente grande como para que lo
 
 Lo que hace distinto a este generador es su \textbf{combinatoria clínica}: en lugar de insertar cadenas de texto aleatorias en los campos de descripción médica, el script construye frases plausibles combinando fragmentos predefinidos de estado general del paciente, hallazgos de exploración física, factores de riesgo y notas clínicas. El resultado es un conjunto de datos que, a efectos de consulta y análisis, se comporta como datos reales procedentes de un entorno de producción.
 
+\subsubsection*{Despliegue con Docker}
+
+En lugar de instalar MySQL Server directamente sobre el sistema operativo, optamos por levantarlo dentro de un contenedor \textbf{Docker}~\cite{docker}. La ventaja es doble: por un lado, conseguimos un entorno reproducible e idéntico para los tres integrantes del grupo, sin depender de la versión que cada uno tuviera instalada ni \enquote{ensuciar} la máquina con servicios permanentes; por otro, podemos arrancar, parar o borrar el servidor entero con un solo comando. Bastó con descargar la imagen oficial de MySQL de Docker Hub y arrancar el contenedor mapeando el puerto~3306 para poder conectarnos después desde MySQL Workbench (Listado~\ref{lst:docker_mysql}).
+
+\begin{lstlisting}[caption={Arranque del servidor MySQL en un contenedor Docker, con el puerto 3306 redirigido para acceder desde Workbench.}, label={lst:docker_mysql}]
+docker run -p 3306:3306 --name chronohealth-mysql \
+    -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0
+\end{lstlisting}
+
+El parámetro \texttt{-p 3306:3306} redirige el puerto del equipo anfitrión al del contenedor ---imprescindible para que Workbench encuentre el servicio en \texttt{localhost}--- y \texttt{-d} lo ejecuta en segundo plano. Como se verá en la Parte~II, repetimos esta misma estrategia de contenedores para desplegar la base de datos XML, de modo que todo el sistema queda encapsulado y es fácil de reproducir.
+
 % ===========================================================================
 \subsection{Desarrollo del Proyecto con MySQL}
 % ===========================================================================
@@ -193,6 +204,8 @@ La Figura~\ref{fig:roles} muestra el panel de gestión de usuarios de MySQL Work
 % ---------------------------------------------------------------------------
 \subsubsection{Población Sintética de Datos}
 % ---------------------------------------------------------------------------
+
+Antes de nada conviene justificar por qué trabajamos con datos \textit{sintéticos} y no con datos reales de pacientes. La razón es sencilla: los historiales clínicos son probablemente la categoría de información personal más sensible que existe, y precisamente por eso el RGPD~\cite{rgpd2016} los blinda como datos especialmente protegidos. Conseguir un volumen real de decenas de miles de historiales habría exigido la aprobación de un comité de ética, el consentimiento de los pacientes y unas garantías de custodia que quedan completamente fuera del alcance de un trabajo académico. Generar los datos de forma sintética nos permite disponer de un volumen grande y realista para los benchmarks sin manejar ni un solo dato real de una persona, lo que además encaja a la perfección con la filosofía de privacidad por diseño que defiende todo el proyecto.
 
 Para que los benchmarks sean representativos de un entorno de producción, se necesita un volumen de datos suficientemente grande. El script \texttt{generador\_datos.py} utiliza \texttt{Faker~(es\_ES)} para generar datos personales coherentes con la realidad española y construye cada registro siguiendo una lógica de combinatoria clínica: las descripciones de eventos, los factores de riesgo y las notas clínicas se obtienen combinando fragmentos predefinidos de texto médico plausible, de modo que el resultado tiene coherencia semántica y no produce cadenas sin sentido que distorsionarían los patrones de consulta.
 

@@ -145,6 +145,13 @@ El documento de bajas (\texttt{bajas\_semanticas.xml}) sigue el mismo patrón co
 
 Para poder consultar los documentos necesitábamos una base de datos que entendiera XML de forma nativa, y elegimos eXist-db. A diferencia de guardar los ficheros en una carpeta cualquiera, eXist-db los indexa internamente y nos da un motor XQuery completo al que atacar desde su editor web, eXide.
 
+Igual que hicimos con MySQL en la Parte~I, levantamos eXist-db dentro de un contenedor \textbf{Docker}~\cite{docker}, manteniendo así la misma filosofía de entorno reproducible y aislado para todo el sistema. En este caso mapeamos los puertos~8080 y~8443 (HTTP y HTTPS) para poder entrar a eXide desde el navegador (Listado~\ref{lst:docker_exist}).
+
+\begin{lstlisting}[caption={Arranque de eXist-db en un contenedor Docker, exponiendo los puertos de eXide.}, label={lst:docker_exist}]
+docker run -it -d -p 8080:8080 -p 8443:8443 \
+    --name existdb existdb/existdb:6.1.0-SNAPSHOT
+\end{lstlisting}
+
 El despliegue fue directo: dentro de eXist-db creamos una colección específica, \texttt{chronohealth\_docs}, pensada para alojar todo el ecosistema de documentos del proyecto, y subimos a ella los tres XML semánticos. Una vez dentro, eXide nos permite escribir y ejecutar consultas contra ellos referenciándolos con la función \texttt{doc()} y su ruta dentro del servidor (los \texttt{doc("/db/PROYECTO/...")} que aparecen en los listados siguientes apuntan precisamente a esa ubicación). A partir de aquí, todo el trabajo es ya XQuery puro.
 
 % ===========================================================================
