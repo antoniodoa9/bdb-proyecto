@@ -27,7 +27,7 @@ El proyecto se estructura en torno a cinco objetivos principales, que se persigu
 \begin{enumerate}
 
     \item \textbf{Diseñar un modelo relacional que implemente la separación de datos personales y clínicos conforme al principio de privacidad por diseño del RGPD.} La separación no debe ser una restricción de acceso a nivel de aplicación, fácilmente eludible, sino una separación física en el modelo de datos que haga imposible el acceso accidental a información identificativa desde el modelo epidemiológico. El mecanismo elegido es un \textit{hash} criptográfico SHA-256 que actúa como puente determinista entre ambos dominios.
-
+    \\
     \item \textbf{Optimizar el rendimiento mediante una arquitectura multi-motor que asigne a cada tabla el \textit{storage engine} más apropiado para su patrón concreto de acceso.} MySQL~8 permite combinar distintos motores bajo un mismo servidor. La propuesta aprovecha esta capacidad para asignar InnoDB a las tablas transaccionales, ARCHIVE al histórico de bajas médicas y MEMORY a la cola de triaje de urgencias.
 
     \item \textbf{Validar empíricamente, mediante benchmarking controlado, el impacto de los índices y la elección de motor sobre el tiempo de respuesta y el espacio de almacenamiento.} Las decisiones de diseño no se presentan solo a nivel teórico: se cuantifican mediante mediciones repetidas sobre un conjunto de datos sintético de 40.000 pacientes, usando el \textit{Visual Explain} de MySQL Workbench y un script Python de medición estadística.
@@ -45,21 +45,23 @@ El proyecto se estructura en torno a cinco objetivos principales, que se persigu
 La implementación se apoya sobre las siguientes herramientas y tecnologías principales:
 
 \begin{description}
-    \item[MySQL 8.0] Sistema gestor de base de datos relacional. Se utiliza en su versión 8.0, que introduce mejoras significativas en el optimizador de consultas, soporte nativo de expresiones de tabla comunes y una gestión mejorada del buffer pool de InnoDB. Su capacidad de combinar múltiples \textit{storage engines} bajo un mismo servidor es la característica decisiva para este proyecto.
+    \item[MySQL 8.0.] Sistema gestor de base de datos relacional. Se utiliza en su versión 8.0, que introduce mejoras significativas en el optimizador de consultas, soporte nativo de expresiones de tabla comunes y una gestión mejorada del buffer pool de InnoDB. Su capacidad de combinar múltiples \textit{storage engines} bajo un mismo servidor es la característica decisiva para este proyecto.
 
-    \item[MySQL Workbench] Herramienta gráfica oficial de administración y modelado. Se utiliza para el diseño del modelo entidad-relación, la ejecución de consultas con análisis visual del plan de ejecución (\textit{Visual Explain}) y la inspección de estadísticas de tamaño de tabla (\textit{Table Inspector}).
+    \item[MySQL Workbench.] Herramienta gráfica oficial de administración y modelado. Se utiliza para el diseño del modelo entidad-relación, la ejecución de consultas con análisis visual del plan de ejecución (\textit{Visual Explain}) y la inspección de estadísticas de tamaño de tabla (\textit{Table Inspector}).
 
-    \item[Python 3.12] Lenguaje de scripting para la automatización de la generación de datos y la medición estadística de tiempos de consulta. Los scripts principales son \texttt{generador\_datos.py} (población de la base de datos) y \texttt{medidor\_tiempos.py} (benchmarking).
+    \item[Python 3.12.] Lenguaje de scripting para la automatización de la generación de datos y la medición estadística de tiempos de consulta. Los scripts principales son \texttt{generador\_datos.py} (población de la base de datos) y \texttt{medidor\_tiempos.py} (benchmarking).
 
-    \item[Faker \texttt{(es\_ES)}] Biblioteca Python para la generación de datos personales sintéticos localizados para España: nombres, NIFs, números de la Seguridad Social, provincias y municipios reales. Se combina con lógica de combinatoria clínica propia para producir descripciones de eventos médicos plausibles.
+    \item[Faker \texttt{(es\_ES)}.] Biblioteca Python para la generación de datos personales sintéticos localizados para España: nombres, NIFs, números de la Seguridad Social, provincias y municipios reales. Se combina con lógica de combinatoria clínica propia para producir descripciones de eventos médicos plausibles.
 
-    \item[PyMySQL] Conector Python nativo para MySQL. Gestiona las operaciones de inserción masiva y las consultas de benchmarking con soporte completo de \texttt{utf8mb4}.
+    \item[PyMySQL.] Conector Python nativo para MySQL. Gestiona las operaciones de inserción masiva y las consultas de benchmarking con soporte completo de \texttt{utf8mb4}.
 
-    \item[eXist-db y eXide] Base de datos nativa XML y su editor web integrado. Se usan en la Parte~II para alojar los documentos clínicos transformados y ejecutar sobre ellos las consultas XQuery (FLWOR).
+    \item[eXist-db y eXide.] Base de datos nativa XML y su editor web integrado. Se usan en la Parte~II para alojar los documentos clínicos transformados y ejecutar sobre ellos las consultas XQuery (FLWOR).
 
-    \item[MongoDB y Compass] Base de datos documental NoSQL y su interfaz gráfica oficial. Soportan la Parte~III: almacenan las guías clínicas y los expedientes en formato JSON, ejecutan los \textit{aggregation pipelines} y permiten analizar los planes de ejecución con \textit{Explain Plan}.
+    \item[MongoDB y Compass.] Base de datos documental NoSQL y su interfaz gráfica oficial. Soportan la Parte~III: almacenan las guías clínicas y los expedientes en formato JSON, ejecutan los \textit{aggregation pipelines} y permiten analizar los planes de ejecución con \textit{Explain Plan}.
 
-    \item[Tkinter y PyMongo] Librerías de Python para, respectivamente, construir la interfaz gráfica de escritorio del sistema de soporte a la decisión y comunicarse con MongoDB desde ella.
+    \item[Tkinter y PyMongo.] Librerías de Python para, respectivamente, construir la interfaz gráfica de escritorio del sistema de soporte a la decisión y comunicarse con MongoDB desde ella.
+
+    \item[Docker.] Plataforma de contenedores. Tanto el servidor MySQL como la base de datos XML eXist-db se despliegan en contenedores Docker, lo que garantiza un entorno reproducible, aislado e idéntico para todo el equipo, sin instalaciones permanentes sobre el sistema operativo.
 \end{description}
 
 % ===========================================================================
