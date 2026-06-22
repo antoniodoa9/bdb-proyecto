@@ -4,7 +4,7 @@
 \usepackage{umatfgspanish}
 \usepackage{blindtext}
 
-\graphicspath{{images/}{../images/}{capturas_de_pantalla/}{../capturas_de_pantalla/}}
+\graphicspath{{images/}{../images/}{capturas_de_pantalla/}{../capturas_de_pantalla/}{}{../}}
 
 \usepackage{subfiles} % Best loaded last in the preamble
 
@@ -16,12 +16,21 @@
 \lstset{basicstyle=\codefont\small}
 \renewcommand{\texttt}[1]{{\codefont\small #1}}
 
+%% Mismo problema con las URL de la bibliografia: \url usa \ttfamily, que no
+%% renderiza con este montaje de fontspec y dejaba las direcciones en blanco
+%% (solo se veia el punto final). Se redirige \UrlFont a la familia que si
+%% funciona para que las URL de las referencias vuelvan a aparecer.
+\renewcommand{\UrlFont}{\codefont}
+
 %% Paquetes adicionales para la parte relacional
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{subcaption}
+
+%% Comillas tipograficas con \enquote (se adapta al idioma activo via babel)
+\usepackage{csquotes}
 
 %% Bibliografia (requiere biber como backend)
 \usepackage[backend=biber, style=numeric-comp, sorting=nyt, maxbibnames=6]{biblatex}
@@ -55,6 +64,12 @@
 
 \section{Parte~I: Base de Datos Relacional con MySQL}
 \subfile{sections/parte_relacional}
+
+\section{Parte~II: Bases de Datos Semiestructuradas con XML y eXist-db}
+\subfile{sections/parte_xml}
+
+\section{Parte~III: Arquitectura Híbrida NoSQL con MongoDB}
+\subfile{sections/parte_mongodb}
 
 \section{Conclusions and Futures Lines of Research}
 \subfile{sections/conclusion}

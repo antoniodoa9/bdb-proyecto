@@ -25,8 +25,10 @@ Performance optimisation is achieved through a deliberate multi-engine strategy:
 
 Empirical benchmarking across three representative query patterns validated the design decisions quantitatively. Proper indexing produced speedups of \textbf{33.8×} for temporal aggregations, \textbf{62.3×} for patient-history joins, and \textbf{1.5×} for triage priority lookups. The MEMORY engine reduced triage query latency by \textbf{45.9\%} compared to InnoDB. On the storage side, ARCHIVE achieved a \textbf{79.2\% space reduction} relative to InnoDB for the same medical leave dataset (533~KiB vs.\ 2,560~KiB for $\approx$6,300 records), which at regional health-system scale translates to hundreds of gigabytes in annual savings.
 
+Building on this relational foundation, the work extends into two further storage paradigms. In the semi-structured phase, the data is exported to XML, restructured with Python into a meaningful clinical hierarchy, and loaded into \textbf{eXist-db}, where three \textbf{XQuery} (FLWOR) queries act as a clinical decision support system: they triangulate emergency patients against their prior history, detect chronic patients, and raise hypoxia alerts. In the NoSQL phase, a \textbf{hybrid MongoDB architecture} stores clinical guidelines as BSON documents and applies them to 50,000 patient records through aggregation pipelines (\texttt{\$lookup}, \texttt{\$bucket}, \texttt{\$switch}). Execution-plan analysis (\texttt{.explain()}) confirmed that indexing replaces a full collection scan (\textbf{COLLSCAN} over 50,000 documents) with an index scan (\textbf{IXSCAN}) that examines only the 12,040 relevant documents. The whole system is wrapped in a Python GUI that delegates heavy processing to the MongoDB engine, while upholding privacy-by-design: the national ID is turned into a SHA-256 hash at initial insertion and never leaves the transactional layer.
+
 \bigskip
-\noindent\bfseries{\large{Keywords:}} MySQL, InnoDB, ARCHIVE, MEMORY, GDPR, pseudonymisation, longitudinal medical records, query benchmarking, storage engines, indexing, Python, Faker.
+\noindent\bfseries{\large{Keywords:}} MySQL, InnoDB, ARCHIVE, MEMORY, GDPR, pseudonymisation, longitudinal medical records, query benchmarking, indexing, XML, XQuery, eXist-db, MongoDB, BSON, aggregation pipeline, clinical decision support, Python.
 
 \end{abstract}
 \end{document}

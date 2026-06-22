@@ -1,0 +1,297 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+% ===========================================================================
+\subsection{Del dato tabular al documento clínico}
+% ===========================================================================
+
+La Parte~I dejó montada una base de datos relacional sólida, pero un modelo en tablas tiene una limitación de fondo cuando hablamos de información clínica: aplana en filas algo que, en la realidad, es profundamente jerárquico. Un paciente no es una fila; es un \textit{contenedor} que dentro tiene su demografía, y dentro de esa demografía cuelga un fichero de eventos, y cada evento tiene a su vez un diagnóstico con su código. En el modelo relacional toda esa estructura de árbol queda repartida entre varias tablas que luego hay que volver a unir con \texttt{JOIN} cada vez que se quiere reconstruir la imagen completa del paciente.
+
+Las bases de datos semiestructuradas trabajan justo al revés: guardan el árbol tal cual, sin desmontarlo. El estándar XML~\cite{w3cxml} permite representar un historial clínico de forma que la propia estructura del documento \textit{ya cuenta la historia}, sin necesidad de claves foráneas. Por eso en esta segunda parte cogemos los mismos datos de ChronoHealthDB que ya teníamos en MySQL y los llevamos a un terreno distinto: los exportamos, les damos una forma jerárquica con sentido clínico y los cargamos en \textbf{eXist-db}~\cite{existdb}, una base de datos nativa XML sobre la que después lanzamos consultas con XQuery.
+
+El objetivo de fondo no es solo \textit{guardar} los documentos, sino \textit{razonar} sobre ellos. Las tres consultas que cierran el capítulo no son simples búsquedas: cruzan urgencias con antecedentes, detectan pacientes crónicos y lanzan alertas de hipoxia. Es decir, funcionan como un pequeño sistema de soporte a la decisión clínica (CDSS, por sus siglas en inglés)~\cite{sutton2020}, pero implementado íntegramente con tecnología documental.
+
+\paragraph{Nota sobre el código.} Todas las sentencias de esta fase ---tanto el SQL que ejecutamos en MySQL Workbench para sacar los XML crudos como el código XQuery final que corrimos en el editor eXide--- están recogidas en un único archivo de texto del repositorio. A lo largo del capítulo las vamos reproduciendo con el entorno \texttt{lstlisting} para que queden documentadas, en el mismo orden en que las fuimos usando.
+
+% ===========================================================================
+\subsection{Exportación y transformación semántica}
+% ===========================================================================
+
+\subsubsection{Extracción del XML crudo desde MySQL Workbench}
+
+El primer paso fue volcar los datos relacionales a XML. MySQL Workbench permite exportar directamente el resultado de una consulta a un fichero XML, así que no hizo falta ninguna herramienta intermedia: basta con ejecutar el \texttt{SELECT}, pulsar sobre el icono de exportar resultados y elegir el formato XML. El problema es que ese XML sale \textit{plano}: una etiqueta por fila y dentro un campo por columna, exactamente igual de tabular que la tabla de origen. Lo interesante viene después, al darle forma.
+
+Lanzamos tres consultas, una por cada \enquote{dominio} de datos que queríamos llevar a documentos. La primera reconstruye los historiales clínicos cruzando \texttt{paciente\_anonimo} con \texttt{evento\_clinico}; filtramos por códigos CIE-10~\cite{cie10oms} que empiezan por \texttt{J} (patología respiratoria) para acotar el volumen a un caso de uso concreto y manejable. La segunda extrae el histórico de bajas laborales, y la tercera, el estado actual de la cola de urgencias. El Listado~\ref{lst:sql_export} recoge las tres.
+
+\begin{lstlisting}[language=SQL, caption={Las tres consultas SQL ejecutadas en MySQL Workbench para exportar los datos a XML crudo.}, label={lst:sql_export}]
+-- (1) Historiales clinicos: demografia + eventos respiratorios
+SELECT pa.codigo_hash, pa.anio_nacimiento, pa.sexo_biologico,
+       pa.grupo_sanguineo, pa.region_sanitaria,
+       ec.fecha_evento, ec.tipo_evento, ec.codigo_cie10,
+       ec.descripcion_cie10, ec.especialidad
+FROM   paciente_anonimo pa
+       INNER JOIN evento_clinico ec ON ec.id_paciente = pa.id_paciente
+WHERE  ec.codigo_cie10 LIKE 'J%'   -- Filtramos respiratorio para acotar
+ORDER  BY pa.codigo_hash, ec.fecha_evento ASC;
+
+-- (2) Historico de bajas laborales
+SELECT codigo_hash_paciente, fecha_inicio_baja, dias_totales_baja,
+       codigo_cie10_causa, tipo_contingencia
+FROM   historico_bajas_medicas
+ORDER  BY codigo_hash_paciente;
+
+-- (3) Cola de urgencias activa (mayores de 60, triaje grave)
+SELECT pa.codigo_hash, pa.anio_nacimiento, pa.sexo_biologico,
+       t.fecha_hora_llegada, t.nivel_triaje_manchester,
+       t.motivo_consulta, t.saturacion_oxigeno, t.estado_actual
+FROM   paciente_anonimo pa
+       INNER JOIN triaje_urgencias_actual t
+               ON pa.codigo_hash = t.codigo_hash_paciente
+WHERE  pa.anio_nacimiento <= 1966
+  AND  t.nivel_triaje_manchester <= 2
+ORDER  BY t.nivel_triaje_manchester ASC, t.fecha_hora_llegada ASC;
+\end{lstlisting}
+
+El resultado de exportar la primera consulta tiene la pinta del Listado~\ref{lst:xml_crudo}: el típico formato \texttt{<resultset>} de Workbench, con un \texttt{<row>} por evento y un \texttt{<field name="...">} por cada columna. Funciona, pero no aporta nada que no estuviera ya en la tabla: si un paciente tiene tres eventos respiratorios, su año de nacimiento y su grupo sanguíneo se repiten tres veces, una por fila. No hay jerarquía, no hay agrupación, no hay semántica. Solo filas.
+
+\begin{lstlisting}[language=XML, caption={Fragmento del XML crudo exportado por Workbench: estructura plana, una fila por evento.}, label={lst:xml_crudo}]
+<row>
+    <field name="codigo_hash">0000b0d759fca3ef...464b72</field>
+    <field name="anio_nacimiento">1994</field>
+    <field name="sexo_biologico">M</field>
+    <field name="grupo_sanguineo">A-</field>
+    <field name="region_sanitaria">Baleares</field>
+    <field name="fecha_evento">2022-12-14</field>
+    <field name="tipo_evento">Consulta_Primaria</field>
+    <field name="codigo_cie10">J06.9</field>
+    <field name="descripcion_cie10">Infeccion aguda de vias respiratorias</field>
+</row>
+\end{lstlisting}
+
+\subsubsection{Reestructuración con Python: de filas planas a jerarquía clínica}
+
+Aquí entra el verdadero trabajo de esta fase. Escribimos tres pequeños scripts en Python (\texttt{transformador\_xml.py}, \texttt{transformador\_bajas.py} y \texttt{transformador\_urgencias.py}) que cogen el XML plano y lo reconstruyen como un árbol con sentido. La idea es la misma en los tres: recorrer las filas, agrupar por paciente usando su \texttt{codigo\_hash} como clave, y colgar cada evento dentro del paciente al que pertenece, en lugar de dejarlos sueltos uno detrás de otro.
+
+Usamos la librería estándar \texttt{xml.etree.ElementTree} para construir el nuevo árbol y \texttt{minidom} para imprimirlo con sangría legible. El núcleo del primer transformador es el del Listado~\ref{lst:transformador}: un diccionario (\texttt{pacientes\_registrados}) hace de memoria para saber si un paciente ya tiene creado su nodo; la primera vez que aparece, le montamos su bloque de \texttt{<Datos\_Demograficos>} y un contenedor \texttt{<Fichero\_Eventos>} vacío; a partir de ahí, cada nuevo evento de ese mismo paciente se inserta dentro de su contenedor.
+
+\begin{lstlisting}[language=Python, caption={Núcleo de \texttt{transformador\_xml.py}: agrupación de filas planas en una jerarquía por paciente.}, label={lst:transformador}]
+root_nuevo = ET.Element("Historiales_Clinicos_Estructurales")
+pacientes_registrados = {}
+
+for row in root_mysql.findall('row'):
+    hash_id = row.find("field[@name='codigo_hash']").text
+    anio    = row.find("field[@name='anio_nacimiento']").text
+    # ... (resto de campos)
+
+    # La primera vez que vemos al paciente, creamos su nodo y su demografia
+    if hash_id not in pacientes_registrados:
+        paciente_node = ET.SubElement(root_nuevo, "Paciente", id=hash_id)
+        demografia = ET.SubElement(paciente_node, "Datos_Demograficos")
+        ET.SubElement(demografia, "Anio_Nacimiento").text = anio
+        # ... (sexo, grupo sanguineo, region)
+        eventos_container = ET.SubElement(paciente_node, "Fichero_Eventos")
+        pacientes_registrados[hash_id] = eventos_container
+
+    # Cada evento se cuelga DENTRO de su paciente
+    evento_node = ET.SubElement(pacientes_registrados[hash_id],
+                                "Evento_Medico", tipo=tipo)
+    ET.SubElement(evento_node, "Fecha_Registro").text = fecha
+    ET.SubElement(evento_node, "Diagnostico_CIE10", codigo=cie10).text = desc
+\end{lstlisting}
+
+Los otros dos scripts siguen la misma filosofía con un par de matices. El de bajas (\texttt{transformador\_bajas.py}) agrupa las incapacidades temporales bajo un \texttt{<Expediente\_Laboral>} por paciente. El de urgencias (\texttt{transformador\_urgencias.py}) tuvo que adaptarse a que el XML crudo de esa consulta venía en otro formato (etiquetas \texttt{<ROW>} con los campos como hijos directos, en lugar del \texttt{<field name="...">}), así que ahí leemos los valores de otra manera; es un detalle pequeño pero ilustra que conviene no dar por hecho que todas las exportaciones salen iguales.
+
+\subsubsection{Los tres documentos semánticos resultantes}
+
+El resultado son tres documentos XML que ya se leen como lo que son. En el de historiales (Listado~\ref{lst:xml_historial}), el año de nacimiento de un paciente aparece una sola vez, y todos sus eventos quedan ordenados dentro de su \texttt{<Fichero\_Eventos>}. La estructura habla por sí sola: un humano puede entenderla de un vistazo y, lo más importante, una consulta XQuery puede recorrerla navegando por el árbol en lugar de cruzar tablas.
+
+\begin{lstlisting}[language=XML, caption={Documento semántico de historiales: la jerarquía paciente $\rightarrow$ eventos $\rightarrow$ diagnóstico.}, label={lst:xml_historial}]
+<Paciente id="0000b0d759fca3ef...464b72">
+    <Datos_Demograficos>
+        <Anio_Nacimiento>1994</Anio_Nacimiento>
+        <Sexo_Biologico>M</Sexo_Biologico>
+        <Grupo_Sanguineo>A-</Grupo_Sanguineo>
+        <Region_Sanitaria>Baleares</Region_Sanitaria>
+    </Datos_Demograficos>
+    <Fichero_Eventos>
+        <Evento_Medico tipo="Consulta_Primaria">
+            <Fecha_Registro>2022-12-14</Fecha_Registro>
+            <Diagnostico_CIE10 codigo="J06.9">Infeccion aguda
+                de vias respiratorias superiores</Diagnostico_CIE10>
+        </Evento_Medico>
+    </Fichero_Eventos>
+</Paciente>
+\end{lstlisting}
+
+El documento de bajas (\texttt{bajas\_semanticas.xml}) sigue el mismo patrón con \texttt{<Expediente\_Laboral>} y, dentro, una o varias \texttt{<Incapacidad\_Temporal>} con su duración en días y su causa CIE-10. El de urgencias (\texttt{urgencias\_criticas\_semanticas.xml}) modela cada \texttt{<Paciente\_Critico>} con su \texttt{<Estado\_Clinico\_Actual>}, donde guardamos el nivel de prioridad del triaje, el motivo y la saturación de oxígeno (Listado~\ref{lst:xml_urgencias}). Estos tres ficheros son los que después interrogamos con XQuery.
+
+\begin{lstlisting}[language=XML, caption={Documento semántico de urgencias: cada paciente crítico con su estado clínico actual.}, label={lst:xml_urgencias}]
+<Paciente_Critico identificador="041a528871284c15...9169b">
+    <Anio_Nacimiento>1966</Anio_Nacimiento>
+    <Sexo>F</Sexo>
+    <Estado_Clinico_Actual nivel_prioridad="1">
+        <Hora_Ingreso>2026-06-19 09:29:22</Hora_Ingreso>
+        <Motivo_Principal>Fiebre alta, tos y desaturacion.</Motivo_Principal>
+        <Saturacion_O2 unidad="%">86.2</Saturacion_O2>
+        <Fase_Asistencia>En_Espera</Fase_Asistencia>
+    </Estado_Clinico_Actual>
+</Paciente_Critico>
+\end{lstlisting}
+
+% ===========================================================================
+\subsection{Despliegue en eXist-db}
+% ===========================================================================
+
+Para poder consultar los documentos necesitábamos una base de datos que entendiera XML de forma nativa, y elegimos eXist-db. A diferencia de guardar los ficheros en una carpeta cualquiera, eXist-db los indexa internamente y nos da un motor XQuery completo al que atacar desde su editor web, eXide.
+
+El despliegue fue directo: dentro de eXist-db creamos una colección específica, \texttt{chronohealth\_docs}, pensada para alojar todo el ecosistema de documentos del proyecto, y subimos a ella los tres XML semánticos. Una vez dentro, eXide nos permite escribir y ejecutar consultas contra ellos referenciándolos con la función \texttt{doc()} y su ruta dentro del servidor (los \texttt{doc("/db/PROYECTO/...")} que aparecen en los listados siguientes apuntan precisamente a esa ubicación). A partir de aquí, todo el trabajo es ya XQuery puro.
+
+% ===========================================================================
+\subsection{Consultas XQuery con expresiones FLWOR}
+% ===========================================================================
+
+XQuery~\cite{w3cxquery} es el lenguaje estándar para interrogar documentos XML, y su construcción más característica es la expresión \textbf{FLWOR} (se pronuncia como \textit{flower}). El nombre es un acrónimo de sus cinco cláusulas: \texttt{for} (itera sobre una secuencia de nodos), \texttt{let} (declara variables), \texttt{where} (filtra), \texttt{order by} (ordena) y \texttt{return} (construye la salida). Si se piensa, es básicamente la misma lógica de un \texttt{SELECT} de SQL, pero en lugar de operar sobre filas opera sobre nodos de un árbol, y en lugar de devolver una tabla devuelve XML nuevo que nosotros mismos diseñamos. Esa última parte es la potente: la salida de cada consulta es un informe XML a medida.
+
+Las tres consultas que siguen están pensadas como herramientas de apoyo a la decisión clínica. En cada una incluimos el código tal cual lo ejecutamos en eXide y dejamos indicada la captura con el resultado.
+
+\subsubsection{Consulta 1: triangulación de riesgo clínico (CDSS)}
+
+Esta es la consulta más ambiciosa de las tres porque cruza los tres documentos a la vez. La idea clínica es la siguiente: tenemos a un paciente que acaba de llegar a urgencias, pero un dato aislado de urgencias dice poco. Lo que de verdad ayuda a decidir es \textit{ponerlo en contexto}: ¿este señor que llega con disnea tiene antecedentes respiratorios?, ¿cuántas bajas laborales acumula por lo mismo? Eso es triangular: cogemos al paciente de urgencias y vamos a buscar su rastro en el historial y en las bajas.
+
+El código (Listado~\ref{lst:xq1}) itera con \texttt{for} sobre cada \texttt{Paciente\_Critico} de urgencias, y para cada uno usa su identificador para ir a buscar, con sendas expresiones \texttt{let}, cuántos eventos respiratorios tiene en el historial y cuántos días de baja suma en total (fíjese en el operador \texttt{!}, que aplica la conversión a entero a cada nodo de duración antes de sumarlos con \texttt{sum()}). El \texttt{where} se queda solo con los pacientes que efectivamente tienen antecedentes, y el \texttt{return} monta un \texttt{<Paciente>} de salida con su episodio actual y sus antecedentes ya resumidos. El resultado es un informe unificado que un médico de urgencias podría leer para priorizar.
+
+\begin{lstlisting}[caption={Consulta XQuery 1: triangulación de urgencias con historial y bajas (CDSS).}, label={lst:xq1}]
+xquery version "3.1";
+
+let $urgencias    := doc("/db/PROYECTO/urgencias_criticas_semanticas.xml")
+let $historiales  := doc("/db/PROYECTO/historiales_semanticos_maximo.xml")
+let $bajas        := doc("/db/PROYECTO/bajas_semanticas.xml")
+
+return
+<Informe_Pacientes>
+{
+    (: Iteramos sobre cada paciente que esta ahora mismo en urgencias :)
+    for $paciente_urg in $urgencias//Paciente_Critico
+    let $id     := $paciente_urg/@identificador
+    let $nivel  := xs:integer($paciente_urg/Estado_Clinico_Actual/@nivel_prioridad)
+    let $motivo := $paciente_urg/Estado_Clinico_Actual/Motivo_Principal/text()
+
+    (: Cuantos eventos respiratorios tiene ese mismo ID en el historial :)
+    let $eventos     := $historiales//Paciente[@id = $id]/Fichero_Eventos/Evento_Medico
+    let $num_eventos := count($eventos)
+
+    (: Buscamos ese ID en las bajas y sumamos los dias :)
+    let $bajas_paciente  := $bajas//Expediente_Laboral[@id_paciente = $id]/Incapacidad_Temporal
+    let $total_dias_baja := sum($bajas_paciente/Duracion_Dias ! xs:integer(.))
+
+    (: Solo pacientes con historial O con bajas previas :)
+    where $num_eventos > 0 or $total_dias_baja > 0
+    order by $nivel ascending
+
+    return
+    <Paciente hash_id="{$id}" prioridad_triaje="{$nivel}">
+        <Episodio_Actual><Motivo>{$motivo}</Motivo></Episodio_Actual>
+        <Antecedentes>
+            <Eventos_Respiratorios_Previos>{$num_eventos}</Eventos_Respiratorios_Previos>
+            <Dias_Acumulados_Baja>{$total_dias_baja}</Dias_Acumulados_Baja>
+        </Antecedentes>
+    </Paciente>
+}
+</Informe_Pacientes>
+\end{lstlisting}
+
+La Figura~\ref{fig:xq1} muestra el informe generado en eXide: para cada paciente crítico aparecen su motivo de consulta actual junto a su número de eventos respiratorios previos y sus días de baja acumulados, ordenados por gravedad del triaje. Visto así, queda claro su valor como sistema de soporte a la decisión: el clínico no solo ve quién está grave \textit{ahora}, sino quién está grave \textit{y además} arrastra una historia respiratoria de fondo.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{01_xquery.png}
+    \caption{Resultado de la Consulta~1 en eXide. Cada paciente de urgencias aparece enriquecido con sus antecedentes respiratorios y sus días de baja acumulados, ordenado por prioridad de triaje.}
+    \label{fig:xq1}
+\end{figure}
+
+\subsubsection{Consulta 2: detección de pacientes crónicos}
+
+La segunda consulta es más sencilla de leer pero esconde una decisión de diseño importante. Su objetivo es localizar a los pacientes \enquote{crónicos} respiratorios, entendidos aquí como los que acumulan tres o más episodios registrados en su historial. Para eso recorre los pacientes del documento de historiales, cuenta sus eventos y se queda con los que llegan al umbral, ordenándolos de más a menos episodios (Listado~\ref{lst:xq2}).
+
+\begin{lstlisting}[caption={Consulta XQuery 2: detección de pacientes crónicos con tres o más episodios.}, label={lst:xq2}]
+xquery version "3.1";
+
+let $historiales := doc("/db/PROYECTO/historiales_semanticos_maximo.xml")
+
+return
+<Pacientes_Alto_Riesgo>
+{
+    for $paciente in $historiales//Paciente
+    let $id          := $paciente/@id
+    let $num_eventos := count($paciente/Fichero_Eventos/Evento_Medico)
+
+    (: Nos quedamos con los que tienen 3 o mas episodios respiratorios :)
+    where $num_eventos >= 3
+    order by $num_eventos descending
+
+    return
+    <Paciente_Cronico>
+        <Hash_ID>{$id}</Hash_ID>
+        <Total_Episodios_Registrados>{$num_eventos}</Total_Episodios_Registrados>
+        <Nivel_Riesgo>ALTO</Nivel_Riesgo>
+    </Paciente_Cronico>
+}
+</Pacientes_Alto_Riesgo>
+\end{lstlisting}
+
+La parte interesante es \textit{cómo} contamos. Una primera versión que probamos contaba los eventos navegando dos veces el árbol o comparando cada evento con todos los demás, y sobre un documento con decenas de miles de pacientes eso se traducía en un comportamiento cercano al cuadrático ($O(n^2)$) que disparaba el consumo de memoria del motor. La reescritura que dejamos es la del listado: en lugar de comparar eventos entre sí, contamos directamente los hijos \texttt{Evento\_Medico} de cada paciente con un único \texttt{count()} sobre una ruta relativa (\texttt{\$paciente/Fichero\_Eventos/Evento\_Medico}). Al apoyarnos en la propia jerarquía del documento ---los eventos ya están agrupados bajo su paciente gracias a la transformación de Python--- el conteo es local a cada nodo y el coste vuelve a ser lineal. Es un buen ejemplo de cómo una estructura de datos bien pensada simplifica la consulta: el trabajo que hicimos al construir el XML nos lo ahorramos luego al interrogarlo. La Figura~\ref{fig:xq2} recoge el listado de crónicos ordenado por número de episodios.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{02_xquery.png}
+    \caption{Resultado de la Consulta~2 en eXide: pacientes con tres o más episodios respiratorios, etiquetados como riesgo ALTO y ordenados de mayor a menor número de episodios.}
+    \label{fig:xq2}
+\end{figure}
+
+\subsubsection{Consulta 3: alerta de hipoxia geriátrica}
+
+La última consulta trabaja solo sobre el documento de urgencias y persigue un objetivo muy concreto: levantar una alerta con los pacientes que están desaturando, es decir, con una saturación de oxígeno por debajo del 95\,\%. Además, calcula la edad \enquote{al vuelo} restando el año de nacimiento al año actual, sin necesidad de almacenarla en ningún sitio (Listado~\ref{lst:xq3}).
+
+\begin{lstlisting}[caption={Consulta XQuery 3: monitor de hipoxia con cálculo de edad al vuelo.}, label={lst:xq3}]
+xquery version "3.1";
+
+let $urgencias := doc("/db/PROYECTO/urgencias_criticas_semanticas.xml")
+
+return
+<Monitor_Saturacion_Geriatrica>
+{
+    for $urg in $urgencias//Paciente_Critico
+    let $id       := $urg/@identificador
+    let $sat_str  := $urg/Estado_Clinico_Actual/Saturacion_O2/text()
+    let $anio_nac := $urg/Anio_Nacimiento/text()
+
+    (: Convertimos la saturacion a decimal de forma segura :)
+    let $sat_num  := if ($sat_str castable as xs:double)
+                     then xs:double($sat_str) else 100.0
+
+    (: Filtramos a los que tienen menos del 95% de oxigeno :)
+    where $sat_num < 95.0
+    order by $sat_num ascending
+
+    return
+    <Alerta_Hipoxia>
+        <Paciente_Hash>{substring($id, 1, 15)}...</Paciente_Hash>
+        <Edad_Estimada>{2026 - xs:integer($anio_nac)} anios</Edad_Estimada>
+        <Nivel_Oxigeno>{$sat_num} %</Nivel_Oxigeno>
+        <Estado_Triaje>{$urg/Estado_Clinico_Actual/Motivo_Principal/text()}</Estado_Triaje>
+    </Alerta_Hipoxia>
+}
+</Monitor_Saturacion_Geriatrica>
+\end{lstlisting}
+
+Esta consulta nos dio más guerra de lo esperado, y precisamente por el manejo de los tipos. En XML \textit{todo es texto}: la saturación \enquote{86.2} no es un número, es la cadena de caracteres \texttt{"86.2"}. Si intentábamos compararla directamente con \texttt{< 95.0}, el motor o bien hacía una comparación alfabética sin sentido o bien fallaba cuando algún paciente traía la saturación como \enquote{Desconocida} (recordemos que el transformador rellenaba así los nulos). La solución fue doble. Primero, comprobar con \texttt{castable as xs:double} si la cadena se puede convertir realmente a decimal \textit{antes} de intentarlo; si no es convertible, asignamos un valor neutro de \texttt{100.0} (un paciente \enquote{sin dato} no debe saltar como hipóxico). Solo después, ya con un \texttt{xs:double} de verdad entre manos, aplicamos el filtro numérico. Para la edad hicimos lo análogo con \texttt{xs:integer} sobre el año de nacimiento. Es un detalle típico de XQuery que conviene tener presente: hay que ser explícito con las conversiones, porque el lenguaje no las adivina por ti. La Figura~\ref{fig:xq3} muestra las alertas resultantes, ordenadas de menor a mayor saturación (los más graves arriba).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{03_xquery.png}
+    \caption{Resultado de la Consulta~3 en eXide: alertas de hipoxia con la edad calculada dinámicamente y la saturación de oxígeno, ordenadas de menor a mayor (prioridad clínica descendente).}
+    \label{fig:xq3}
+\end{figure}
+
+\end{document}

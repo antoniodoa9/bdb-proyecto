@@ -26,7 +26,7 @@ Los tres objetivos que articulan el trabajo son los siguientes:
 
 \subsubsection*{MySQL 8.0}
 
-La elección de MySQL 8.0 como sistema gestor de base de datos principal responde a una característica que, a efectos de este proyecto, resulta decisiva: la posibilidad de mezclar múltiples \textit{storage engines} bajo un mismo servidor e incluso dentro de una misma base de datos. En entornos de producción homogéneos, todas las tablas suelen utilizar el mismo motor por comodidad operativa. Sin embargo, cuando los requisitos de distintas tablas son tan dispares como los de un historial longitudinal activo, un archivo histórico inmutable y una cola de trabajo en tiempo real, la capacidad de especializar cada tabla individualmente se convierte en una ventaja competitiva concreta y cuantificable.
+La elección de MySQL 8.0 como sistema gestor de base de datos principal responde a una característica que, a efectos de este proyecto, resulta decisiva: la posibilidad de mezclar múltiples \textit{storage engines} bajo un mismo servidor e incluso dentro de una misma base de datos. En entornos de producción homogéneos, todas las tablas suelen utilizar el mismo motor por comodidad operativa. Sin embargo, cuando los requisitos de distintas tablas son tan dispares como los de un historial longitudinal activo, un archivo histórico inmutable y una cola de trabajo en tiempo real, la capacidad de especializar cada tabla por separado se convierte en una ventaja real y, como veremos, medible.
 
 A ello se añade que MySQL 8.0 introduce mejoras sustanciales respecto a versiones anteriores: soporte nativo de expresiones de tabla común (CTE) y funciones de ventana, mejoras en el optimizador de consultas con histogramas de columna, y un motor InnoDB revisado con mejor gestión del \textit{buffer pool}. Para los propósitos del benchmarking que se describe más adelante, disponer de un optimizador de consultas maduro es esencial para obtener resultados representativos.
 
@@ -62,13 +62,24 @@ El núcleo técnico del proyecto es la asignación de un motor distinto a cada t
 
 La generación de un volumen de datos lo suficientemente grande como para que los benchmarks sean estadísticamente representativos requería una herramienta de automatización. Se utilizó Python~3.12 con la biblioteca \texttt{Faker} (localización \texttt{es\_ES}) para sintetizar datos personales coherentes con la realidad española: nombres, apellidos y NIF válidos, números de la Seguridad Social de doce dígitos, provincias y municipios reales. El conector \texttt{PyMySQL} se empleó para las operaciones de inserción masiva contra el servidor MySQL.
 
-El rasgo diferenciador del script de generación es su \textbf{combinatoria clínica}: en lugar de insertar cadenas de texto aleatorias en los campos de descripción médica, el script construye frases plausibles combinando fragmentos predefinidos de estado general del paciente, hallazgos de exploración física, factores de riesgo y notas clínicas. El resultado es un conjunto de datos que, a efectos de consulta y análisis, se comporta como datos reales procedentes de un entorno de producción.
+Lo que hace distinto a este generador es su \textbf{combinatoria clínica}: en lugar de insertar cadenas de texto aleatorias en los campos de descripción médica, el script construye frases plausibles combinando fragmentos predefinidos de estado general del paciente, hallazgos de exploración física, factores de riesgo y notas clínicas. El resultado es un conjunto de datos que, a efectos de consulta y análisis, se comporta como datos reales procedentes de un entorno de producción.
 
 % ===========================================================================
 \subsection{Desarrollo del Proyecto con MySQL}
 % ===========================================================================
 
 \subsubsection{Diseño del Modelo Relacional}
+
+Antes de entrar en los detalles, conviene tener una visión de conjunto del modelo. La base de datos se articula en torno a cinco tablas, cada una con un papel bien definido dentro del flujo de trabajo sanitario. El diagrama EER (\textit{Enhanced Entity-Relationship}) de la Figura~\ref{fig:eer} muestra la estructura completa tal y como la diseñamos en MySQL Workbench, con sus columnas, tipos de datos y las relaciones que las conectan.
+
+El paciente se representa de forma desdoblada: \texttt{paciente\_anonimo} guarda toda la información clínica y demográfica sin nada que identifique a la persona, mientras que \texttt{datos\_personales} contiene el nombre, el DNI y el número de la Seguridad Social. Ambas tablas se unen mediante una relación identificadora 1:1. De \texttt{paciente\_anonimo} cuelga \texttt{evento\_clinico} con una relación 1:N, que es donde se acumula el historial longitudinal (cada paciente tiene varios eventos a lo largo del tiempo). Por último, \texttt{historico\_bajas\_medicas} y \texttt{triaje\_urgencias\_actual} se vinculan al paciente a través del \texttt{codigo\_hash}, sin clave foránea declarada, por los motivos que se explican más adelante.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{nuestra_base_de_datos.jpg}
+    \caption{Diagrama EER completo de ChronoHealthDB en MySQL Workbench. Se aprecian las cinco tablas del sistema y sus relaciones: la separación 1:1 entre \texttt{paciente\_anonimo} y \texttt{datos\_personales}, la relación 1:N hacia \texttt{evento\_clinico} y las dos tablas auxiliares (\texttt{historico\_bajas\_medicas} y \texttt{triaje\_urgencias\_actual}) enlazadas por el \texttt{codigo\_hash}.}
+    \label{fig:eer}
+\end{figure}
 
 La base de datos se crea con el juego de caracteres \texttt{utf8mb4} y la colación \texttt{utf8mb4\_unicode\_ci}. La elección de \texttt{utf8mb4} sobre la variante \texttt{utf8} de MySQL es deliberada: la implementación interna de \texttt{utf8} en MySQL es una variante reducida a tres bytes por carácter que excluye el plano suplementario Unicode, con lo que cualquier carácter fuera del BMP —emojis, caracteres de escrituras asiáticas modernas— provocaría errores silenciosos de truncado. \texttt{utf8mb4} es la implementación correcta del estándar y debe ser la elección predeterminada en cualquier sistema que no pueda garantizar la homogeneidad del conjunto de caracteres introducido por los usuarios.
 
@@ -126,6 +137,10 @@ CREATE TABLE IF NOT EXISTS datos_personales (
 \end{lstlisting}
 
 La tabla \texttt{historico\_bajas\_medicas} referencia al paciente mediante su \texttt{codigo\_hash} como columna de texto ordinaria, sin declarar clave foránea. Esta solución de compromiso es una consecuencia directa de la limitación del motor ARCHIVE, que no admite restricciones referenciales. Se acepta conscientemente a cambio de los beneficios de compresión que se analizan en el apartado~\ref{sec:benchmark_espacial}.
+
+\paragraph{Enfoque OLTP y ausencia de una dimensión Tiempo explícita}
+
+Una pregunta que nos surgió durante el diseño fue si convenía modelar el tiempo como una dimensión propia, al estilo de un esquema en estrella de un \textit{data warehouse}, con una tabla \texttt{tiempo} a la que apuntaran las claves foráneas de los eventos. Tras valorarlo, decidimos no hacerlo, y creemos que la decisión está justificada. Añadir una tabla física explícita denominada \texttt{tiempo} requeriría rediseñar el diagrama EER, modificar las claves foráneas, reescribir el generador de datos en Python para insertar los registros dimensionales y reestructurar todas las consultas SQL y XML realizadas hasta ahora. A nivel de ingeniería, en un sistema que gestiona colas en tiempo real (triaje) y registros clínicos longitudinales, el diseño OLTP actual es preciso y evita la sobrecarga de uniones (JOIN) innecesarias para consultar una fecha. En otras palabras, las dimensiones temporales (año, mes, día) son tan baratas de calcular sobre las propias columnas \texttt{DATE} mediante funciones nativas de MySQL como \texttt{YEAR()} o \texttt{MONTH()} que el coste de mantener una tabla de calendario separada no compensaría: estaríamos pagando complejidad y JOINs adicionales para resolver algo que el motor ya hace de forma directa. Un esquema en estrella tiene todo el sentido cuando el objetivo principal es la explotación analítica masiva (OLAP); aquí, en cambio, el patrón de uso dominante es transaccional —dar de alta a un paciente en triaje, abrir su ficha, registrar un evento—, y para eso el modelo normalizado orientado a transacciones es la opción correcta.
 
 % ---------------------------------------------------------------------------
 \subsubsection{Seguridad y Gestión de Roles}
@@ -400,6 +415,10 @@ La comparativa entre InnoDB y MEMORY (Figura~\ref{fig:q3_motores}) es el experim
 
 La diferencia entre InnoDB y MEMORY puede parecer modesta en valores absolutos ($0{,}66$~ms), pero su significado práctico va más allá del número. InnoDB, incluso con índice, necesita leer datos desde un \textit{buffer pool} con respaldo en disco; cuando ese pool se llena bajo carga, aparecen operaciones de E/S que pueden disparar la latencia de forma impredecible. MEMORY, al operar íntegramente en RAM, garantiza una latencia constante e independiente de la carga de disco, lo que lo convierte en el motor apropiado para cualquier cola que deba responder en tiempo real.
 
+\paragraph{La cara B del motor MEMORY: volatilidad comprobada en la práctica}
+
+Esta velocidad tiene una contrapartida que pudimos comprobar de primera mano. Como toda la tabla \texttt{triaje\_urgencias\_actual} vive en memoria RAM, basta con reiniciar el servidor para perder su contenido. Nos pasó de forma totalmente involuntaria: al reiniciar el contenedor Docker en el que corría MySQL, la tabla de triaje se vació automáticamente —la estructura de la tabla seguía ahí, pero sin una sola fila dentro—. Lejos de ser un problema, esto encaja a la perfección con la naturaleza de los datos que guarda: la cola de urgencias es información efímera, válida solo mientras hay pacientes esperando, y no tiene ningún sentido conservarla entre arranques del sistema. Volver a llenarla nos costó apenas \textbf{5 segundos}, ejecutando de nuevo el generador de datos sintéticos (\texttt{rellenar\_urgencias.py}), que vuelca un nuevo lote de pacientes en la tabla. Este pequeño incidente terminó siendo la mejor demostración de para qué sirve realmente MEMORY: como una cola de procesamiento rápida y desechable, no como un almacén permanente.
+
 % ---- GRÁFICAS RESUMEN -----------------------------------------------
 \paragraph{Síntesis gráfica del benchmarking temporal}
 
@@ -409,42 +428,48 @@ Las Figuras~\ref{fig:grafica_indices} y~\ref{fig:grafica_motores} resumen visual
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            ybar,
+            ybar=5pt,
             ymode=log,
             log origin=infty,
-            bar width=18pt,
+            bar width=26pt,
             width=0.92\textwidth,
-            height=8.5cm,
-            ylabel={Tiempo medio (ms) --- escala logarítmica},
+            height=9.5cm,
+            ylabel={Tiempo medio (ms, escala logarítmica)},
             ylabel style={font=\small},
-            ymin=0.4, ymax=120,
+            ymin=0.4, ymax=150,
+            ytick={0.5,1,2,5,10,20,50,100},
+            yticklabels={{0,5}, {1}, {2}, {5}, {10}, {20}, {50}, {100}},
             xtick=data,
-            symbolic x coords={C1 sin índ., C1 con índ., C2 sin índ., C2 con índ., C3 sin índ., C3 con índ.},
-            xticklabel style={rotate=30, anchor=east, font=\small},
+            symbolic x coords={C1, C2, C3},
+            xticklabels={C1 --- COUNT temporal, C2 --- JOIN por id, C3 --- Triaje nivel 1},
+            xticklabel style={font=\small},
             nodes near coords,
             nodes near coords align={vertical},
-            every node near coord/.append style={font=\scriptsize},
-            legend style={at={(0.98,0.97)}, anchor=north east, font=\small},
-            enlarge x limits=0.09,
+            every node near coord/.append style={
+                font=\small\bfseries, color=black,
+                /pgf/number format/.cd, fixed, precision=2, use comma
+            },
+            legend style={at={(0.5,-0.14)}, anchor=north, legend columns=2, font=\small},
+            enlarge x limits=0.35,
             grid=major,
             grid style={dashed, gray!30},
         ]
             \addplot[fill=red!65, draw=red!80!black] coordinates {
-                (C1 sin índ., 46.06)
-                (C2 sin índ., 39.89)
-                (C3 sin índ.,  1.25)
+                (C1, 46.06)
+                (C2, 39.89)
+                (C3,  1.25)
             };
-            \addlegendentry{Sin índice (InnoDB)}
+            \addlegendentry{Sin índice}
 
             \addplot[fill=blue!60, draw=blue!80!black] coordinates {
-                (C1 con índ., 1.36)
-                (C2 con índ., 0.64)
-                (C3 con índ., 0.82)
+                (C1, 1.36)
+                (C2, 0.64)
+                (C3, 0.82)
             };
-            \addlegendentry{Con índice (InnoDB)}
+            \addlegendentry{Con índice}
         \end{axis}
     \end{tikzpicture}
-    \caption{Impacto de los índices sobre el tiempo de ejecución para las tres consultas (escala logarítmica, media de 50 iteraciones). Los factores de mejora son 33,8×, 62,3× y 1,5× para C1, C2 y C3 respectivamente. C3 ya era rápida sin índice por el reducido tamaño de la tabla MEMORY.}
+    \caption{Impacto de los índices sobre el tiempo de ejecución para las tres consultas (escala logarítmica, media de 50 iteraciones). Cada barra muestra su valor exacto en milisegundos. Los factores de mejora son 33,8×, 62,3× y 1,5× para C1, C2 y C3 respectivamente. C3 ya era rápida sin índice por el reducido tamaño de la tabla MEMORY.}
     \label{fig:grafica_indices}
 \end{figure}
 
@@ -452,36 +477,41 @@ Las Figuras~\ref{fig:grafica_indices} y~\ref{fig:grafica_motores} resumen visual
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            ybar,
-            bar width=22pt,
-            width=0.75\textwidth,
-            height=7cm,
+            ybar=6pt,
+            bar width=30pt,
+            width=0.8\textwidth,
+            height=7.5cm,
             ylabel={Tiempo medio (ms)},
             ylabel style={font=\small},
-            ymin=0, ymax=1.7,
+            ymin=0, ymax=1.75,
             xtick=data,
-            symbolic x coords={InnoDB (C1), MyISAM (C1), InnoDB (C3), MEMORY (C3)},
-            xticklabel style={rotate=20, anchor=east, font=\small},
+            symbolic x coords={C1, C3},
+            xticklabels={C1 --- lectura (InnoDB vs.\ MyISAM), C3 --- triaje (InnoDB vs.\ MEMORY)},
+            xticklabel style={font=\small},
             nodes near coords,
             nodes near coords align={vertical},
-            every node near coord/.append style={font=\small\bfseries},
-            enlarge x limits=0.2,
+            every node near coord/.append style={
+                font=\small\bfseries, color=black,
+                /pgf/number format/.cd, fixed, precision=2, use comma
+            },
+            legend style={at={(0.5,-0.16)}, anchor=north, legend columns=2, font=\small},
+            enlarge x limits=0.6,
             grid=major,
             grid style={dashed, gray!30},
         ]
             \addplot[fill=blue!55, draw=blue!80!black] coordinates {
-                (InnoDB (C1), 1.40)
-                (InnoDB (C3), 0.82)
+                (C1, 1.40)
+                (C3, 0.82)
             };
-            \addplot[fill=teal!60, draw=teal!80!black] coordinates {
-                (MyISAM (C1), 1.20)
+            \addlegendentry{InnoDB}
+            \addplot[fill=teal!65, draw=teal!80!black] coordinates {
+                (C1, 1.20)
+                (C3, 0.77)
             };
-            \addplot[fill=green!55!black, draw=green!70!black] coordinates {
-                (MEMORY (C3), 0.77)
-            };
+            \addlegendentry{Motor alternativo (MyISAM / MEMORY)}
         \end{axis}
     \end{tikzpicture}
-    \caption{Comparativa de rendimiento entre motores de almacenamiento con índice activo. MyISAM supera a InnoDB en lecturas sin transacciones (C1); MEMORY supera a InnoDB para la cola de triaje en tiempo real (C3).}
+    \caption{Comparativa de rendimiento entre motores de almacenamiento con índice activo (media de 50 iteraciones, valor exacto sobre cada barra). En la Consulta~1 (lectura pura) el motor alternativo es MyISAM, que supera a InnoDB por carecer de sobrecarga transaccional; en la Consulta~3 (cola de triaje en tiempo real) el alternativo es MEMORY, que gana a InnoDB al operar íntegramente en RAM.}
     \label{fig:grafica_motores}
 \end{figure}
 

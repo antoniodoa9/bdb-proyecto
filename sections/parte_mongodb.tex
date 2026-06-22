@@ -1,0 +1,283 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+% ===========================================================================
+\subsection{Un ecosistema híbrido: por qué MySQL y MongoDB a la vez}
+% ===========================================================================
+
+Llegados a este punto del proyecto teníamos una base relacional muy buena para lo transaccional (Parte~I) y una capa documental XML para razonar sobre jerarquías clínicas (Parte~II). La pregunta natural era: ¿y si el conocimiento médico que queremos aplicar tampoco encaja bien en tablas? Las guías clínicas son justo eso. El protocolo de una neumonía no es una fila: es un objeto con una primera línea de tratamiento (que puede tener uno o varios fármacos), unos criterios de ingreso (que puede tener o no), unos objetivos de control\ldots\ Cada patología trae campos distintos. Meter eso en una tabla relacional obligaría a un mar de columnas vacías o a tablas auxiliares interminables.
+
+Por eso decidimos montar una \textbf{arquitectura híbrida}: MySQL se queda como sistema transaccional (la verdad de los pacientes, las altas, el triaje), y \textbf{MongoDB} entra como almacén documental para las guías clínicas y para los expedientes que vamos a cruzar contra ellas. No es que una tecnología sustituya a la otra; es que cada una hace lo que mejor sabe. MongoDB guarda documentos BSON~\cite{bsonspec} ---básicamente JSON binario--- con esquema flexible, así que una guía con criterios de ingreso y otra sin ellos conviven sin problema en la misma colección.
+
+\paragraph{Privacy-by-Design: anonimización desde la primera inserción.}
+Hay un argumento arquitectónico que para nosotros es el más importante de toda esta parte. Cuando cargamos los datos masivos de pacientes en MongoDB (50.000 registros de expedientes externos), \textit{en ningún momento} viaja un DNI. La razón es que el identificador del paciente ya nace anonimizado en origen: nuestro generador (\texttt{generador\_datos\_claude.py}) convierte el documento de identidad en un hash irreversible SHA-256~\cite{fips180sha256} \textit{en la propia inserción inicial} en MySQL, tal y como muestra el Listado~\ref{lst:hash_mongo}. Cuando exportamos esos datos hacia MongoDB, lo que sale es ese hash de 64 caracteres, nunca el dato personal.
+
+\begin{lstlisting}[language=Python, caption={El DNI se transforma en hash SHA-256 en el mismo momento de la inserción, antes de que el dato llegue a viajar a ningún sitio.}, label={lst:hash_mongo}]
+documento   = fake.unique.nif()                     # DNI sintetico
+codigo_hash = hashlib.sha256(documento.encode()).hexdigest()
+# A partir de aqui SOLO se propaga codigo_hash; el DNI nunca sale de MySQL
+\end{lstlisting}
+
+Esto es \textit{privacidad desde el diseño} en el sentido literal del término: la protección no es un parche que aplicamos al final, sino una propiedad que está cocida en el dato desde que existe. Y es una diferencia importante respecto a la práctica habitual de muchos sistemas, que exportan la información \enquote{en crudo} (con datos identificativos) y la anonimizan \textit{a posteriori}, dejando una ventana de tiempo en la que los datos personales han estado expuestos en ficheros intermedios. En nuestro flujo esa ventana sencillamente no existe: la colección \texttt{pacientes\_externos} de MongoDB se identifica siempre por el hash (Figura~\ref{fig:bson_paciente}), de modo que cualquier análisis posterior opera ya sobre datos seudonimizados, en línea con lo que el RGPD~\cite{rgpd2016} exige para los datos de salud.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.78\textwidth]{ejemplo_documentos_pacientes_externos_json_en_mongodb.png}
+    \caption{Documentos de la colección \texttt{pacientes\_externos} en MongoDB Compass. El campo \texttt{id\_paciente} es el hash SHA-256; no hay ni rastro del DNI ni del nombre del paciente.}
+    \label{fig:bson_paciente}
+\end{figure}
+
+% ===========================================================================
+\subsection{Modelado BSON e integración dinámica con \texttt{\$lookup}}
+% ===========================================================================
+
+Las guías clínicas se modelan como documentos BSON con estructura anidada. Cada guía lleva su código CIE-10 (que es la clave por la que la enlazaremos con los pacientes), la enfermedad, la especialidad de referencia y, dentro de \texttt{protocolo\_tratamiento}, los arrays y subcampos del tratamiento. La Figura~\ref{fig:bson_guia} muestra dos ejemplos reales: fíjese en que la guía de la angina tiene \texttt{criterios\_ingreso} y la de la diabetes no, pero ambas conviven sin que el esquema se queje. Esa flexibilidad es justo lo que buscábamos.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{ejemplo_documentos_guias_clinicas_json_en_mongodb.png}
+    \caption{Dos documentos de la colección \texttt{guias\_clinicas}. El subdocumento \texttt{protocolo\_tratamiento} contiene arrays (\texttt{primera\_linea}, \texttt{criterios\_ingreso}, \texttt{objetivos\_control}) que varían de una patología a otra sin romper el modelo.}
+    \label{fig:bson_guia}
+\end{figure}
+
+Lo interesante no es guardar las guías, sino \textit{aplicarlas} a los pacientes. Para eso usamos el \textit{aggregation pipeline} de MongoDB~\cite{mongodbmanual}, que funciona como una cadena de montaje: el documento entra por una etapa, sale transformado y pasa a la siguiente. La pieza clave es \texttt{\$lookup}, que es el equivalente de un \texttt{JOIN} relacional pero entre colecciones de documentos.
+
+\paragraph{Consulta 1 --- Asignación automática de protocolo (CDSS).}
+La primera consulta cruza los 50.000 pacientes contra las guías para asignar a cada uno el protocolo que le corresponde según su diagnóstico (Listado~\ref{lst:mongo_cdss}). El \texttt{\$lookup} empareja el \texttt{diagnostico\_principal} del paciente con el \texttt{codigo\_cie10} de la guía y mete la guía encontrada en un array llamado \texttt{guia\_aplicada}. Pero aquí viene el detalle fino: no todos los diagnósticos tienen guía digitalizada (solo tenemos 12 protocolos), así que muchos pacientes saldrían con un \texttt{guia\_aplicada} vacío. El \texttt{\$match: \{ \$ne: [] \}} justo después del \texttt{\$lookup} actúa como un filtro inteligente: descarta en caliente a todos los pacientes cuyo array de guía quedó vacío, es decir, se queda únicamente con los que sí tienen un protocolo asociado. Es una forma muy limpia de discriminar a quién aplica una pauta clínica y a quién no, sin escribir un solo \texttt{if}.
+
+\begin{lstlisting}[language=Python, caption={Consulta 1: asignación de protocolo clínico mediante \texttt{\$lookup} y filtrado con \texttt{\$ne: []}.}, label={lst:mongo_cdss}]
+pipeline = [
+    { '$lookup': {
+        'from': 'guias_clinicas',
+        'localField': 'diagnostico_principal',
+        'foreignField': 'codigo_cie10',
+        'as': 'guia_aplicada'
+    }},
+    # Descarta en caliente a los pacientes SIN protocolo (array vacio)
+    { '$match': { 'guia_aplicada': { '$ne': [] } } },
+    { '$unwind': { 'path': '$guia_aplicada' } },
+    { '$project': {
+        '_id': 0,
+        'id_paciente': 1,
+        'fecha_ingreso': 1,
+        'diagnostico': '$descripcion_patologia',
+        'fuente_protocolo': '$guia_aplicada.fuente_externa',
+        'medicacion_primera_linea': '$guia_aplicada.protocolo_tratamiento.primera_linea'
+    }}
+]
+\end{lstlisting}
+
+Tras el filtrado, \texttt{\$unwind} \enquote{desempaqueta} el array (que ya solo tiene un elemento) para poder acceder cómodamente a sus campos, y \texttt{\$project} se queda con lo justo: el paciente, su diagnóstico, la fuente del protocolo y la medicación de primera línea. El resultado (Figura~\ref{fig:mongo_q1}) es, en la práctica, un sistema de soporte a la decisión clínica que responde \enquote{a este paciente con esta patología, dale este tratamiento, según esta guía}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{01_mongodb_primera_consulta.png}
+    \caption{Consulta 1 ejecutada en el panel \textit{Aggregations} de MongoDB Compass. A cada paciente con guía disponible se le asigna su protocolo y su medicación de primera línea.}
+    \label{fig:mongo_q1}
+\end{figure}
+
+% ===========================================================================
+\subsection{Indexación y análisis de rendimiento con \texttt{.explain()}}
+% ===========================================================================
+
+Igual que en la Parte~I medimos el efecto de los índices en MySQL, aquí quisimos comprobar qué pasa por dentro cuando MongoDB resuelve una consulta. La herramienta para eso es \texttt{.explain()}, que en Compass se muestra como un \textit{Explain Plan} visual. Tomamos como caso de estudio el filtro demográfico que abre la consulta de alertas geriátricas (\texttt{anio\_nacimiento <= 1956}), porque es un filtro que se ejecuta sobre los 50.000 documentos de golpe.
+
+\paragraph{Antes: escaneo completo de la colección (COLLSCAN).}
+Sin ningún índice sobre \texttt{anio\_nacimiento}, el planificador no tiene más remedio que mirar los documentos uno a uno. La Figura~\ref{fig:explain_antes} lo deja clarísimo: el plan es un \textbf{COLLSCAN}, examina los \textbf{50.000 documentos} de la colección para devolver 12.040, tarda unos \textbf{28~ms} y, sobre todo, Compass avisa con un mensaje en ámbar: \textit{\enquote{No index available for this query}} y \textit{0 index keys examined}. Es el equivalente exacto del \textit{Full Table Scan} que vimos en MySQL: el cuello de botella es que se recorre toda la colección aunque al final la mayoría de documentos se descarten.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{mongodb_explain_sin_indice.png}
+    \caption{Explain Plan \textbf{ANTES} de indexar: \texttt{COLLSCAN} sobre 50.000 documentos examinados, 0 claves de índice usadas y la advertencia \enquote{No index available for this query}.}
+    \label{fig:explain_antes}
+\end{figure}
+
+\paragraph{Después: salto directo por el árbol B (IXSCAN).}
+Entonces creamos el índice sobre el campo \texttt{anio\_nacimiento} (Compass lo nombra automáticamente \texttt{anio\_nacimiento\_1}). Internamente, MongoDB lo implementa como un árbol B, lo que le permite ir directo a la rama de años que cumplen el filtro en vez de barrer toda la colección. El plan de ejecución cambia por completo (Figura~\ref{fig:explain_despues}): ahora aparece un \textbf{IXSCAN} (recorrido de índice) seguido de un \texttt{FETCH}, se examinan \textbf{exactamente 12.040 documentos} (justo los que cumplen la condición, ni uno más) en lugar de 50.000, y el tiempo baja a unos \textbf{18~ms}. Compass confirma abajo que la consulta \textit{\enquote{used the following index: anio\_nacimiento}}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{mongodb_explain_con_indice.png}
+    \caption{Explain Plan \textbf{DESPUÉS} de indexar: \texttt{IXSCAN}~+~\texttt{FETCH} usando el índice \texttt{anio\_nacimiento\_1}. Los documentos examinados caen de 50.000 a 12.040 y desaparece el escaneo de los $\approx$38.000 documentos irrelevantes.}
+    \label{fig:explain_despues}
+\end{figure}
+
+La lectura es la misma lección de fondo que en MySQL, pero comprobada en un motor totalmente distinto: el índice no \enquote{acelera} la consulta por arte de magia, sino que cambia la \textit{estrategia} de acceso. Pasamos de tocar 50.000 documentos a tocar solo los 12.040 que de verdad importan, eliminando de un plumazo el trabajo inútil sobre los casi 38.000 restantes. Sobre esta colección la mejora de tiempo es contenida (de 28 a 18~ms), pero el dato que de verdad escala es el de documentos examinados: cuanto mayor sea la colección o más selectivo el filtro, más se separa el COLLSCAN del IXSCAN. La Figura~\ref{fig:mongo_indices} muestra el panel de índices de la colección, con los tres que mantenemos: el \texttt{\_id\_} por defecto, \texttt{id\_paciente\_1} (que da soporte a las búsquedas individuales por hash de la interfaz gráfica) y \texttt{anio\_nacimiento\_1} (el que acabamos de analizar)~\cite{mongodbindexes}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{mongodb_indices.png}
+    \caption{Panel \textit{Indexes} de la colección \texttt{pacientes\_externos}. Junto al \texttt{\_id\_} obligatorio, mantenemos \texttt{id\_paciente\_1} para las búsquedas por hash y \texttt{anio\_nacimiento\_1} para los filtros demográficos.}
+    \label{fig:mongo_indices}
+\end{figure}
+
+% ===========================================================================
+\subsection{Minería de datos: \texttt{\$exists}, \texttt{\$subtract} y \texttt{\$bucket}}
+% ===========================================================================
+
+Con el cruce y la indexación resueltos, las tres consultas restantes ya van a explotar los datos para sacar conocimiento epidemiológico.
+
+\paragraph{Consulta 2 --- Alertas geriátricas.}
+Esta consulta busca a los pacientes mayores con una patología que tenga criterios de ingreso, es decir, los candidatos a vigilar de cerca. El orden de las etapas no es casual (Listado~\ref{lst:mongo_geriatria}): lo primero de todo es un \texttt{\$match} demográfico que se queda solo con los nacidos en 1956 o antes. Filtrar \textit{pronto} es lo que permite que el índice de la sección anterior entre en juego y que el resto del pipeline trabaje sobre un subconjunto pequeño en lugar de sobre los 50.000. Después viene el \texttt{\$lookup} con las guías y, aquí está la clave clínica, un \texttt{\$match} con \texttt{\$exists} que navega en profundidad hasta \texttt{guia\_aplicada.protocolo\_tratamiento.criterios\_ingreso} y se queda solo con los pacientes cuya guía realmente \textit{tiene} ese campo. La edad se calcula al vuelo con \texttt{\$subtract} (\texttt{2026 - anio\_nacimiento}), sin almacenarla.
+
+\begin{lstlisting}[language=Python, caption={Consulta 2: alertas geriátricas con filtro demográfico temprano, \texttt{\$subtract} y navegación profunda con \texttt{\$exists}.}, label={lst:mongo_geriatria}]
+pipeline = [
+    # 1) Filtro demografico TEMPRANO (aprovecha el indice anio_nacimiento)
+    { '$match': { 'anio_nacimiento': { '$lte': 1956 } } },
+    { '$lookup': {
+        'from': 'guias_clinicas', 'localField': 'diagnostico_principal',
+        'foreignField': 'codigo_cie10', 'as': 'guia_aplicada' } },
+    { '$unwind': { 'path': '$guia_aplicada' } },
+    # 2) Solo pacientes cuya guia TIENE criterios de ingreso
+    { '$match': {
+        'guia_aplicada.protocolo_tratamiento.criterios_ingreso': { '$exists': True } } },
+    { '$project': {
+        '_id': 0, 'id_paciente': 1,
+        'edad_estimada': { '$subtract': [ 2026, '$anio_nacimiento' ] },
+        'diagnostico': '$descripcion_patologia',
+        'criterios_para_ingreso': '$guia_aplicada.protocolo_tratamiento.criterios_ingreso' } },
+    { '$sort': { 'edad_estimada': -1 } }
+]
+\end{lstlisting}
+
+El informe resultante (Figura~\ref{fig:mongo_q2}) lista a los pacientes geriátricos ordenados de mayor a menor edad, con los criterios concretos que el personal debería vigilar en cada uno (saturación, frecuencia respiratoria, etc.). Es una alerta accionable, no un simple recuento.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{02_mongodb_segunda_consulta.png}
+    \caption{Consulta 2 en Compass: pacientes geriátricos con criterios de ingreso, con la edad calculada dinámicamente mediante \texttt{\$subtract}.}
+    \label{fig:mongo_q2}
+\end{figure}
+
+\paragraph{Consultas 3 y 4 --- Carga asistencial y epidemiología por cohortes.}
+Las dos últimas consultas agregan. La tercera (\texttt{\$group}) calcula la carga por departamento: agrupa por especialidad y patología, cuenta pacientes y saca la edad media con \texttt{\$avg}, dando una foto de qué servicios están más saturados (Listado~\ref{lst:mongo_group}).
+
+\begin{lstlisting}[language=Python, caption={Consulta 3: carga asistencial por departamento con \texttt{\$group} y \texttt{\$avg}.}, label={lst:mongo_group}]
+pipeline = [
+    { '$lookup': { 'from': 'guias_clinicas', 'localField': 'diagnostico_principal',
+        'foreignField': 'codigo_cie10', 'as': 'guia_aplicada' } },
+    { '$unwind': { 'path': '$guia_aplicada' } },
+    { '$group': {
+        '_id': { 'especialidad': '$guia_aplicada.especialidad_referencia',
+                 'patologia': '$guia_aplicada.enfermedad' },
+        'total_pacientes': { '$sum': 1 },
+        'edad_media': { '$avg': { '$subtract': [ 2026, '$anio_nacimiento' ] } } } },
+    { '$sort': { 'total_pacientes': -1 } },
+    { '$project': {
+        '_id': 0, 'departamento': '$_id.especialidad', 'patologia': '$_id.patologia',
+        'carga_pacientes': '$total_pacientes',
+        'edad_media': { '$round': [ '$edad_media', 1 ] } } }
+]
+\end{lstlisting}
+
+La cuarta es la que técnicamente nos pareció más bonita, porque usa \texttt{\$bucket} para segmentar a los pacientes en cohortes de edad de un solo golpe (Listado~\ref{lst:mongo_bucket}). Le damos unos límites ---\texttt{[0, 18, 45, 65, 120]}--- y MongoDB reparte automáticamente a cada paciente en su tramo. El problema es que \texttt{\$bucket} identifica cada cohorte por el límite inferior del tramo (0, 18, 45, 65), que es un número poco amigable para un informe. Para resolverlo, encadenamos un \texttt{\$project} con un \texttt{\$switch} que traduce esos números en etiquetas clínicas legibles: \enquote{Pediatría}, \enquote{Adulto joven}, \enquote{Adulto maduro} y \enquote{Geriatría}. Es un truco sencillo pero que cambia mucho la calidad del resultado final.
+
+\begin{lstlisting}[language=Python, caption={Consulta 4: segmentación en cohortes etarias con \texttt{\$bucket} y etiquetado legible con \texttt{\$switch}.}, label={lst:mongo_bucket}]
+pipeline = [
+    { '$lookup': { 'from': 'guias_clinicas', 'localField': 'diagnostico_principal',
+        'foreignField': 'codigo_cie10', 'as': 'guia' } },
+    { '$unwind': { 'path': '$guia' } },
+    { '$addFields': { 'edad': { '$subtract': [ 2026, '$anio_nacimiento' ] } } },
+    # Segmentamos por tramos de edad en una sola etapa
+    { '$bucket': {
+        'groupBy': '$edad',
+        'boundaries': [ 0, 18, 45, 65, 120 ],
+        'default': 'Edad desconocida',
+        'output': {
+            'total_pacientes_riesgo': { '$sum': 1 },
+            'patologias_frecuentes': { '$addToSet': '$guia.enfermedad' } } } },
+    # Traducimos el limite numerico del tramo a una etiqueta clinica
+    { '$project': {
+        '_id': 0,
+        'cohorte': { '$switch': { 'branches': [
+            { 'case': { '$eq': [ '$_id', 0 ] },  'then': 'Pediatria (0-17 anios)' },
+            { 'case': { '$eq': [ '$_id', 18 ] }, 'then': 'Adulto joven (18-44 anios)' },
+            { 'case': { '$eq': [ '$_id', 45 ] }, 'then': 'Adulto maduro (45-64 anios)' },
+            { 'case': { '$eq': [ '$_id', 65 ] }, 'then': 'Geriatria (65+ anios)' } ],
+            'default': 'Cohorte desconocida' } },
+        'total_pacientes': '$total_pacientes_riesgo',
+        'patologias_registradas': '$patologias_frecuentes' } }
+]
+\end{lstlisting}
+
+Las Figuras~\ref{fig:mongo_q3} y~\ref{fig:mongo_q4} muestran los dos informes: la carga ordenada por departamento y la distribución de pacientes por cohortes de edad con las patologías más frecuentes en cada una.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{03_mongodb_tercera_consulta.png}
+        \caption{Consulta 3: carga por departamento (\texttt{\$group} + \texttt{\$avg}).}
+        \label{fig:mongo_q3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{04_mongodb_cuarta_consulta.png}
+        \caption{Consulta 4: cohortes etarias (\texttt{\$bucket} + \texttt{\$switch}).}
+        \label{fig:mongo_q4}
+    \end{subfigure}
+    \caption{Resultados de las consultas de agregación 3 y 4 en MongoDB Compass.}
+    \label{fig:mongo_q34}
+\end{figure}
+
+% ===========================================================================
+\subsection{La interfaz gráfica: un panel de control sobre MongoDB}
+% ===========================================================================
+
+Para que todo lo anterior fuese usable por alguien que no escribe pipelines de agregación, desarrollamos una pequeña aplicación de escritorio, \texttt{app\_interfaz\_ssdc.py}, con \texttt{Tkinter}~\cite{tkinter} para la interfaz y \texttt{PyMongo}~\cite{pymongo} para hablar con la base de datos. El panel (Figura~\ref{fig:gui_busqueda}) tiene dos módulos bien diferenciados:
+
+\begin{itemize}
+    \item \textbf{Buscador individual de expedientes.} Se introduce el hash de un paciente y la aplicación devuelve su expediente completo: edad, sexo, centro, diagnóstico y, si su patología tiene guía, el protocolo y la medicación recomendada. Por dentro lanza un pipeline corto (\texttt{\$match} por \texttt{id\_paciente} + \texttt{\$lookup} con \texttt{preserveNullAndEmptyArrays} para mostrar también a quien no tiene guía).
+    \item \textbf{Panel de control epidemiológico.} Cuatro botones que disparan las cuatro agregaciones de las secciones anteriores (resumen de tratamientos, alertas geriátricas, carga por departamento y distribución por edades) y vuelcan el informe en pantalla.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{01_interfaz_grafica_busqueda_individual.png}
+    \caption{Módulo de búsqueda individual: introduciendo el hash de un paciente se obtiene su expediente y el protocolo clínico asignado.}
+    \label{fig:gui_busqueda}
+\end{figure}
+
+\paragraph{La decisión técnica de fondo: que calcule la base de datos, no la aplicación.}
+Aquí está, para nosotros, el argumento más importante de toda la interfaz, y no es estético sino de arquitectura. \textbf{El 100\% de los cruces (los \texttt{\$lookup}) y del procesamiento de los 50.000 registros se delega en el motor nativo de MongoDB} (escrito en C++), mediante los \textit{aggregation pipelines}. La aplicación Python no une nada ni recorre nada: se limita a enviar el pipeline, recibir el resultado ya cocinado y pintarlo. Es decir, actúa puramente como \textbf{capa de presentación}.
+
+Esto puede parecer un detalle, pero marca una diferencia enorme de escalabilidad frente al \textit{anti-patrón} más típico del principiante: traerse los 50.000 documentos crudos a la memoria RAM de la aplicación cliente y unirlos a mano iterando con bucles en Python. Esa aproximación funciona con datos de juguete y revienta con datos reales ---satura la memoria del cliente, satura la red y es órdenes de magnitud más lenta---, porque el lenguaje interpretado hace fila a fila lo que un motor de base de datos optimizado hace de forma masiva y compilada. Delegar el trabajo pesado en MongoDB es, sencillamente, la forma correcta de hacerlo. Las Figuras~\ref{fig:gui_tratamientos}, \ref{fig:gui_geriatria}, \ref{fig:gui_carga} y~\ref{fig:gui_edades} muestran los cuatro módulos del panel epidemiológico en funcionamiento.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{02_interfaz_grafica_1_resumen_tratamientos.png}
+        \caption{Resumen de tratamientos (CDSS).}
+        \label{fig:gui_tratamientos}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{03_interfaz_grafica_2_alertas_geriatricas.png}
+        \caption{Alertas geriátricas.}
+        \label{fig:gui_geriatria}
+    \end{subfigure}
+
+    \vspace{0.6em}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{04_interfaz_grafica_3_carga_por_departamento.png}
+        \caption{Carga por departamento.}
+        \label{fig:gui_carga}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{05_interfaz_grafica_4_distribucion_por_edades.png}
+        \caption{Distribución por edades.}
+        \label{fig:gui_edades}
+    \end{subfigure}
+    \caption{Los cuatro módulos del panel de control epidemiológico de \texttt{app\_interfaz\_ssdc.py}, cada uno alimentado por una de las agregaciones ejecutadas íntegramente en el motor de MongoDB.}
+    \label{fig:gui_paneles}
+\end{figure}
+
+\end{document}
