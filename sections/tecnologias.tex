@@ -1,0 +1,84 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+Antes de entrar en el desarrollo conviene presentar, de forma ordenada, las herramientas que hemos utilizado a lo largo de las tres fases del proyecto. No son tecnologías elegidas al azar: cada una resuelve un problema concreto y, juntas, forman el ecosistema híbrido (relacional, semiestructurado y documental) sobre el que se apoya todo el trabajo. En este capítulo las describimos una a una; en los capítulos de desarrollo posteriores se ve cómo las pusimos a trabajar.
+
+% ===========================================================================
+\subsection{MySQL 8.0 y la arquitectura multi-motor}
+% ===========================================================================
+
+La elección de MySQL 8.0 como sistema gestor de base de datos principal responde a una característica que, a efectos de este proyecto, resulta decisiva: la posibilidad de mezclar múltiples \textit{storage engines} bajo un mismo servidor e incluso dentro de una misma base de datos. En entornos de producción homogéneos, todas las tablas suelen utilizar el mismo motor por comodidad operativa. Sin embargo, cuando los requisitos de distintas tablas son tan dispares como los de un historial longitudinal activo, un archivo histórico inmutable y una cola de trabajo en tiempo real, la capacidad de especializar cada tabla por separado se convierte en una ventaja real y, como veremos, medible.
+
+A ello se añade que MySQL 8.0 introduce mejoras sustanciales respecto a versiones anteriores: soporte nativo de expresiones de tabla común (CTE) y funciones de ventana, mejoras en el optimizador de consultas con histogramas de columna, y un motor InnoDB revisado con mejor gestión del \textit{buffer pool}. Para los propósitos del benchmarking que se describe más adelante, disponer de un optimizador de consultas maduro es esencial para obtener resultados representativos. Todo el diseño del modelo, la ejecución de consultas con su plan visual (\textit{Visual Explain}) y la inspección del tamaño de las tablas (\textit{Table Inspector}) los hicimos desde \textbf{MySQL Workbench}, la herramienta gráfica oficial.
+
+El núcleo técnico de esta primera fase es la asignación de un motor distinto a cada tabla en función de su rol en el sistema. La Tabla~\ref{tab:motores} resume esta decisión de diseño.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Asignación de motor de almacenamiento por tipo de tabla en ChronoHealthDB.}
+    \label{tab:motores}
+    \small
+    \begin{tabular}{lllp{5.2cm}}
+        \toprule
+        \textbf{Tabla} & \textbf{Motor} & \textbf{Patrón de acceso} & \textbf{Justificación principal} \\
+        \midrule
+        \texttt{paciente\_anonimo}         & InnoDB  & Lectura/escritura continua    & ACID, claves foráneas, MVCC \\
+        \texttt{datos\_personales}         & InnoDB  & Lectura/escritura controlada  & Integridad transaccional y referencial \\
+        \texttt{evento\_clinico}           & InnoDB  & Inserción + consulta intensiva & Índices compuestos, soporte de FK \\
+        \texttt{historico\_bajas\_medicas} & ARCHIVE & Solo INSERT + SELECT masivo   & Compresión automática \textit{zlib} \\
+        \texttt{triaje\_urgencias\_actual} & MEMORY  & Cola en RAM, alta frecuencia  & Latencia sub-milisegundo \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{InnoDB}~\cite{mysql8innodb} es el motor transaccional por defecto de MySQL 8 y el más completo en cuanto a funcionalidades. Implementa transacciones ACID completas, bloqueo a nivel de fila y \textit{Multi-Version Concurrency Control} (MVCC), que permite lecturas consistentes sin bloquear las escrituras concurrentes. Es el motor apropiado para toda la información que debe modificarse, relacionarse con otras tablas mediante claves foráneas o participar en transacciones reversibles.
+
+\textbf{ARCHIVE}~\cite{mysql8archive} es un motor diseñado específicamente para el almacenamiento de grandes volúmenes de datos históricos inmutables. Aplica compresión \textit{zlib}~\cite{rfc1950zlib} fila a fila en el momento de la inserción, lo que reduce el espacio en disco de forma drástica. A cambio, no soporta claves foráneas, no permite operaciones UPDATE ni DELETE, y sus capacidades de indexación son mínimas. Para un historial de bajas médicas que, por imperativo normativo, debe conservarse intacto una vez emitido, estas restricciones no constituyen un problema operativo.
+
+\textbf{MEMORY}~\cite{mysql8memory} (anteriormente denominado HEAP) almacena sus datos íntegramente en la memoria RAM del servidor. La ausencia de operaciones de E/S a disco se traduce en latencias de acceso significativamente menores que las de cualquier motor basado en almacenamiento persistente. Sus limitaciones —pérdida de datos al reiniciar el servidor, sin soporte de claves foráneas ni transacciones complejas— lo hacen inadecuado para datos permanentes, pero es la opción óptima para colas temporales de alta frecuencia como el registro de pacientes activos en urgencias.
+
+% ===========================================================================
+\subsection{Python: Faker, PyMySQL y combinatoria clínica}
+% ===========================================================================
+
+La generación de un volumen de datos lo suficientemente grande como para que los benchmarks sean estadísticamente representativos requería una herramienta de automatización. Se utilizó Python~3.12 con la biblioteca \texttt{Faker} (localización \texttt{es\_ES}) para sintetizar datos personales coherentes con la realidad española: nombres, apellidos y NIF válidos, números de la Seguridad Social de doce dígitos, provincias y municipios reales. El conector \texttt{PyMySQL} se empleó para las operaciones de inserción masiva contra el servidor MySQL, con soporte completo de \texttt{utf8mb4}.
+
+Lo que hace distinto a este generador es su \textbf{combinatoria clínica}: en lugar de insertar cadenas de texto aleatorias en los campos de descripción médica, el script construye frases plausibles combinando fragmentos predefinidos de estado general del paciente, hallazgos de exploración física, factores de riesgo y notas clínicas. El resultado es un conjunto de datos que, a efectos de consulta y análisis, se comporta como datos reales procedentes de un entorno de producción. Python vuelve a aparecer más adelante en otros dos papeles: el de los scripts que transforman los datos a XML (Parte~II) y el de la interfaz gráfica final (Parte~III).
+
+% ===========================================================================
+\subsection{eXist-db, eXide y XQuery}
+% ===========================================================================
+
+Para la fase semiestructurada necesitábamos una base de datos que entendiera XML de forma nativa, y elegimos \textbf{eXist-db}~\cite{existdb}. A diferencia de guardar los ficheros en una carpeta cualquiera, eXist-db indexa internamente la estructura de árbol de cada documento, lo que le permite resolver consultas de forma eficiente sin tener que desempaquetar el XML cada vez. Trae además un editor web integrado, \textbf{eXide}, desde el que escribimos y ejecutamos el código.
+
+El lenguaje con el que interrogamos esos documentos es \textbf{XQuery}~\cite{w3cxquery}, el estándar del W3C para consultar XML, cuya construcción característica es la expresión FLWOR. Sobre eXist-db montamos los tres documentos clínicos transformados y lanzamos contra ellos las consultas que actúan como sistema de apoyo a la decisión. Todo el detalle de esta fase se desarrolla en la Parte~II.
+
+% ===========================================================================
+\subsection{MongoDB, Compass y el formato BSON}
+% ===========================================================================
+
+La tercera fase se apoya en \textbf{MongoDB}~\cite{mongodbmanual}, una base de datos documental NoSQL. En lugar de tablas con un esquema rígido, MongoDB guarda documentos en formato \textbf{BSON}~\cite{bsonspec} (una representación binaria de JSON), lo que permite que cada documento tenga su propia estructura sin que el esquema se queje. Esto encaja a la perfección con el tipo de información que le confiamos: las guías clínicas, donde cada patología trae campos distintos.
+
+Su motor analítico, el \textit{aggregation pipeline}, permite cruzar y transformar los datos en varias etapas (\texttt{\$lookup}, \texttt{\$bucket}, \texttt{\$group}\ldots) directamente dentro del servidor. Para inspeccionar las colecciones, ejecutar las agregaciones y analizar los planes de ejecución (\textit{Explain Plan}) usamos \textbf{MongoDB Compass}, su interfaz gráfica oficial. La Parte~III explica este componente en profundidad.
+
+% ===========================================================================
+\subsection{La interfaz de usuario: Tkinter y PyMongo}
+% ===========================================================================
+
+Para que todo el trabajo fuese usable por alguien que no escribe consultas a mano, desarrollamos una pequeña aplicación de escritorio con \textbf{Tkinter}~\cite{tkinter}, la librería estándar de interfaces gráficas de Python, y \textbf{PyMongo}~\cite{pymongo}, el conector oficial para hablar con MongoDB desde Python. La aplicación actúa como capa de presentación: recoge lo que pide el usuario, lanza la consulta al motor y muestra el resultado. Su desarrollo se detalla al final de la Parte~III.
+
+% ===========================================================================
+\subsection{Docker como entorno de despliegue}
+% ===========================================================================
+
+Una decisión transversal a todo el proyecto fue desplegar los servidores de datos dentro de contenedores \textbf{Docker}~\cite{docker} en lugar de instalarlos directamente sobre el sistema operativo. La ventaja es doble: por un lado, conseguimos un entorno reproducible e idéntico para los tres integrantes del grupo, sin depender de la versión que cada uno tuviera instalada ni \enquote{ensuciar} la máquina con servicios permanentes; por otro, podemos arrancar, parar o borrar un servidor entero con un solo comando. Para MySQL bastó con descargar la imagen oficial de Docker Hub y arrancar el contenedor mapeando el puerto~3306 para poder conectarnos después desde Workbench (Listado~\ref{lst:docker_mysql}).
+
+\begin{lstlisting}[caption={Arranque del servidor MySQL en un contenedor Docker, con el puerto 3306 redirigido para acceder desde Workbench.}, label={lst:docker_mysql}]
+docker run -p 3306:3306 --name chronohealth-mysql \
+    -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0
+\end{lstlisting}
+
+El parámetro \texttt{-p 3306:3306} redirige el puerto del equipo anfitrión al del contenedor ---imprescindible para que Workbench encuentre el servicio en \texttt{localhost}--- y \texttt{-d} lo ejecuta en segundo plano. Repetimos esta misma estrategia de contenedores para desplegar la base de datos XML eXist-db (el comando concreto se muestra en la Parte~II), de modo que todo el back-end de datos queda encapsulado y es fácil de reproducir.
+
+\end{document}

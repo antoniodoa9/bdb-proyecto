@@ -12,69 +12,13 @@ A esa complejidad técnica se le superpone, además, una exigencia legal de prim
 
 Partiendo de estas dos premisas —optimización del rendimiento y cumplimiento normativo—, el presente proyecto diseña e implementa \textbf{ChronoHealthDB}, una base de datos de historiales médicos longitudinales que aborda simultáneamente ambas cuestiones. El modelo separa la información clínica de la información identificativa mediante un puente criptográfico basado en el algoritmo SHA-256, de modo que los análisis epidemiológicos pueden operar sobre datos completamente pseudoanonimizados sin que sea necesario acceder en ningún momento a los datos personales del paciente. Al mismo tiempo, se explota la capacidad de MySQL~8 de combinar distintos \textit{storage engines} bajo un mismo servidor, asignando a cada tabla el motor más adecuado según su patrón de acceso específico.
 
-Los tres objetivos que articulan el trabajo son los siguientes:
+Los tres objetivos que articulan esta primera fase relacional son los siguientes:
 
 \begin{enumerate}
     \item Diseñar un modelo relacional que implemente la separación de datos personales y clínicos conforme al principio de privacidad por diseño del RGPD, haciendo inviable el acceso accidental a información identificativa desde el modelo epidemiológico.
     \item Optimizar el rendimiento del sistema mediante una arquitectura multi-motor que asigne a cada tabla el \textit{storage engine} más apropiado para su patrón concreto de escritura, lectura y archivado.
     \item Validar empíricamente, mediante una batería de benchmarks controlados, el impacto de los índices y de la elección de motor sobre el tiempo de respuesta y el espacio de almacenamiento.
 \end{enumerate}
-
-% ===========================================================================
-\subsection{Tecnologías empleadas en la fase relacional}
-% ===========================================================================
-
-\subsubsection*{MySQL 8.0}
-
-La elección de MySQL 8.0 como sistema gestor de base de datos principal responde a una característica que, a efectos de este proyecto, resulta decisiva: la posibilidad de mezclar múltiples \textit{storage engines} bajo un mismo servidor e incluso dentro de una misma base de datos. En entornos de producción homogéneos, todas las tablas suelen utilizar el mismo motor por comodidad operativa. Sin embargo, cuando los requisitos de distintas tablas son tan dispares como los de un historial longitudinal activo, un archivo histórico inmutable y una cola de trabajo en tiempo real, la capacidad de especializar cada tabla por separado se convierte en una ventaja real y, como veremos, medible.
-
-A ello se añade que MySQL 8.0 introduce mejoras sustanciales respecto a versiones anteriores: soporte nativo de expresiones de tabla común (CTE) y funciones de ventana, mejoras en el optimizador de consultas con histogramas de columna, y un motor InnoDB revisado con mejor gestión del \textit{buffer pool}. Para los propósitos del benchmarking que se describe más adelante, disponer de un optimizador de consultas maduro es esencial para obtener resultados representativos.
-
-\subsubsection*{Arquitectura multi-motor}
-
-El núcleo técnico del proyecto es la asignación de un motor distinto a cada tabla en función de su rol en el sistema. La Tabla~\ref{tab:motores} resume esta decisión de diseño.
-
-\begin{table}[htbp]
-    \centering
-    \caption{Asignación de motor de almacenamiento por tipo de tabla en ChronoHealthDB.}
-    \label{tab:motores}
-    \small
-    \begin{tabular}{lllp{5.2cm}}
-        \toprule
-        \textbf{Tabla} & \textbf{Motor} & \textbf{Patrón de acceso} & \textbf{Justificación principal} \\
-        \midrule
-        \texttt{paciente\_anonimo}         & InnoDB  & Lectura/escritura continua    & ACID, claves foráneas, MVCC \\
-        \texttt{datos\_personales}         & InnoDB  & Lectura/escritura controlada  & Integridad transaccional y referencial \\
-        \texttt{evento\_clinico}           & InnoDB  & Inserción + consulta intensiva & Índices compuestos, soporte de FK \\
-        \texttt{historico\_bajas\_medicas} & ARCHIVE & Solo INSERT + SELECT masivo   & Compresión automática \textit{zlib} \\
-        \texttt{triaje\_urgencias\_actual} & MEMORY  & Cola en RAM, alta frecuencia  & Latencia sub-milisegundo \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\textbf{InnoDB}~\cite{mysql8innodb} es el motor transaccional por defecto de MySQL 8 y el más completo en cuanto a funcionalidades. Implementa transacciones ACID completas, bloqueo a nivel de fila y \textit{Multi-Version Concurrency Control} (MVCC), que permite lecturas consistentes sin bloquear las escrituras concurrentes. Es el motor apropiado para toda la información que debe modificarse, relacionarse con otras tablas mediante claves foráneas o participar en transacciones reversibles.
-
-\textbf{ARCHIVE}~\cite{mysql8archive} es un motor diseñado específicamente para el almacenamiento de grandes volúmenes de datos históricos inmutables. Aplica compresión \textit{zlib}~\cite{rfc1950zlib} fila a fila en el momento de la inserción, lo que reduce el espacio en disco de forma drástica. A cambio, no soporta claves foráneas, no permite operaciones UPDATE ni DELETE, y sus capacidades de indexación son mínimas. Para un historial de bajas médicas que, por imperativo normativo, debe conservarse intacto una vez emitido, estas restricciones no constituyen un problema operativo.
-
-\textbf{MEMORY}~\cite{mysql8memory} (anteriormente denominado HEAP) almacena sus datos íntegramente en la memoria RAM del servidor. La ausencia de operaciones de E/S a disco se traduce en latencias de acceso significativamente menores que las de cualquier motor basado en almacenamiento persistente. Sus limitaciones —pérdida de datos al reiniciar el servidor, sin soporte de claves foráneas ni transacciones complejas— lo hacen inadecuado para datos permanentes, pero es la opción óptima para colas temporales de alta frecuencia como el registro de pacientes activos en urgencias.
-
-\subsubsection*{Python, Faker y PyMySQL}
-
-La generación de un volumen de datos lo suficientemente grande como para que los benchmarks sean estadísticamente representativos requería una herramienta de automatización. Se utilizó Python~3.12 con la biblioteca \texttt{Faker} (localización \texttt{es\_ES}) para sintetizar datos personales coherentes con la realidad española: nombres, apellidos y NIF válidos, números de la Seguridad Social de doce dígitos, provincias y municipios reales. El conector \texttt{PyMySQL} se empleó para las operaciones de inserción masiva contra el servidor MySQL.
-
-Lo que hace distinto a este generador es su \textbf{combinatoria clínica}: en lugar de insertar cadenas de texto aleatorias en los campos de descripción médica, el script construye frases plausibles combinando fragmentos predefinidos de estado general del paciente, hallazgos de exploración física, factores de riesgo y notas clínicas. El resultado es un conjunto de datos que, a efectos de consulta y análisis, se comporta como datos reales procedentes de un entorno de producción.
-
-\subsubsection*{Despliegue con Docker}
-
-En lugar de instalar MySQL Server directamente sobre el sistema operativo, optamos por levantarlo dentro de un contenedor \textbf{Docker}~\cite{docker}. La ventaja es doble: por un lado, conseguimos un entorno reproducible e idéntico para los tres integrantes del grupo, sin depender de la versión que cada uno tuviera instalada ni \enquote{ensuciar} la máquina con servicios permanentes; por otro, podemos arrancar, parar o borrar el servidor entero con un solo comando. Bastó con descargar la imagen oficial de MySQL de Docker Hub y arrancar el contenedor mapeando el puerto~3306 para poder conectarnos después desde MySQL Workbench (Listado~\ref{lst:docker_mysql}).
-\\
-\\
-\begin{lstlisting}[caption={Arranque del servidor MySQL en un contenedor Docker, con el puerto 3306 redirigido para acceder desde Workbench.}, label={lst:docker_mysql}]
-docker run -p 3306:3306 --name chronohealth-mysql \
-    -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0
-\end{lstlisting}
-
-El parámetro \texttt{-p 3306:3306} redirige el puerto del equipo anfitrión al del contenedor ---imprescindible para que Workbench encuentre el servicio en \texttt{localhost}--- y \texttt{-d} lo ejecuta en segundo plano. Como se verá en la Parte~II, repetimos esta misma estrategia de contenedores para desplegar la base de datos XML, de modo que todo el sistema queda encapsulado y es fácil de reproducir.
 
 % ===========================================================================
 \subsection{Desarrollo del proyecto con MySQL}
