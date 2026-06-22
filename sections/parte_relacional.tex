@@ -67,7 +67,8 @@ Lo que hace distinto a este generador es su \textbf{combinatoria clínica}: en l
 \subsubsection*{Despliegue con Docker}
 
 En lugar de instalar MySQL Server directamente sobre el sistema operativo, optamos por levantarlo dentro de un contenedor \textbf{Docker}~\cite{docker}. La ventaja es doble: por un lado, conseguimos un entorno reproducible e idéntico para los tres integrantes del grupo, sin depender de la versión que cada uno tuviera instalada ni \enquote{ensuciar} la máquina con servicios permanentes; por otro, podemos arrancar, parar o borrar el servidor entero con un solo comando. Bastó con descargar la imagen oficial de MySQL de Docker Hub y arrancar el contenedor mapeando el puerto~3306 para poder conectarnos después desde MySQL Workbench (Listado~\ref{lst:docker_mysql}).
-
+\\
+\\
 \begin{lstlisting}[caption={Arranque del servidor MySQL en un contenedor Docker, con el puerto 3306 redirigido para acceder desde Workbench.}, label={lst:docker_mysql}]
 docker run -p 3306:3306 --name chronohealth-mysql \
     -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0
