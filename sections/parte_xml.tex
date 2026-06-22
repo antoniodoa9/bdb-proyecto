@@ -69,7 +69,7 @@ El resultado de exportar la primera consulta tiene la pinta del Listado~\ref{lst
 </row>
 \end{lstlisting}
 
-\subsubsection{Reestructuración con Python: de filas planas a jerarquía clínica}
+\subsubsection{Reestructuración con Python}
 
 Aquí entra el verdadero trabajo de esta fase. Escribimos tres pequeños scripts en Python (\texttt{transformador\_xml.py}, \texttt{transformador\_bajas.py} y \texttt{transformador\_urgencias.py}) que cogen el XML plano y lo reconstruyen como un árbol con sentido. La idea es la misma en los tres: recorrer las filas, agrupar por paciente usando su \texttt{codigo\_hash} como clave, y colgar cada evento dentro del paciente al que pertenece, en lugar de dejarlos sueltos uno detrás de otro.
 
