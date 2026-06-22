@@ -21,7 +21,7 @@ Los tres objetivos que articulan el trabajo son los siguientes:
 \end{enumerate}
 
 % ===========================================================================
-\subsection{Tecnologías Empleadas en la Fase Relacional}
+\subsection{Tecnologías empleadas en la fase relacional}
 % ===========================================================================
 
 \subsubsection*{MySQL 8.0}
@@ -65,10 +65,10 @@ La generación de un volumen de datos lo suficientemente grande como para que lo
 Lo que hace distinto a este generador es su \textbf{combinatoria clínica}: en lugar de insertar cadenas de texto aleatorias en los campos de descripción médica, el script construye frases plausibles combinando fragmentos predefinidos de estado general del paciente, hallazgos de exploración física, factores de riesgo y notas clínicas. El resultado es un conjunto de datos que, a efectos de consulta y análisis, se comporta como datos reales procedentes de un entorno de producción.
 
 % ===========================================================================
-\subsection{Desarrollo del Proyecto con MySQL}
+\subsection{Desarrollo del proyecto con MySQL}
 % ===========================================================================
 
-\subsubsection{Diseño del Modelo Relacional}
+\subsubsection{Diseño del modelo relacional}
 
 Antes de entrar en los detalles, conviene tener una visión de conjunto del modelo. La base de datos se articula en torno a cinco tablas, cada una con un papel bien definido dentro del flujo de trabajo sanitario. El diagrama EER (\textit{Enhanced Entity-Relationship}) de la Figura~\ref{fig:eer} muestra la estructura completa tal y como la diseñamos en MySQL Workbench, con sus columnas, tipos de datos y las relaciones que las conectan.
 
@@ -83,7 +83,7 @@ El paciente se representa de forma desdoblada: \texttt{paciente\_anonimo} guarda
 
 La base de datos se crea con el juego de caracteres \texttt{utf8mb4} y la colación \texttt{utf8mb4\_unicode\_ci}. La elección de \texttt{utf8mb4} sobre la variante \texttt{utf8} de MySQL es deliberada: la implementación interna de \texttt{utf8} en MySQL es una variante reducida a tres bytes por carácter que excluye el plano suplementario Unicode, con lo que cualquier carácter fuera del BMP —emojis, caracteres de escrituras asiáticas modernas— provocaría errores silenciosos de truncado. \texttt{utf8mb4} es la implementación correcta del estándar y debe ser la elección predeterminada en cualquier sistema que no pueda garantizar la homogeneidad del conjunto de caracteres introducido por los usuarios.
 
-\paragraph{El puente criptográfico: hash SHA-256}
+\paragraph{El puente criptográfico: hash SHA-256.}
 
 El elemento arquitectónico central del modelo es la separación entre \texttt{paciente\_anonimo} y \texttt{datos\_personales}. Ambas tablas comparten la misma clave primaria numérica (\texttt{id\_paciente}) y el mismo valor de \texttt{codigo\_hash}, pero sirven propósitos radicalmente distintos.
 
@@ -98,7 +98,7 @@ codigo_hash = hashlib.sha256(
 ).hexdigest()  # Cadena hexadecimal de 64 caracteres
 \end{lstlisting}
 
-\paragraph{Relación identificadora 1:1 con \texttt{ON DELETE RESTRICT}}
+\paragraph{Relación identificadora 1:1 con \texttt{ON DELETE RESTRICT.}}
 
 La relación entre \texttt{paciente\_anonimo} y \texttt{datos\_personales} es una relación identificadora uno a uno: la clave primaria de \texttt{datos\_personales} es simultáneamente su clave foránea, lo que en el modelo relacional se denomina \textit{identifying relationship}. La cláusula \texttt{ON DELETE RESTRICT} impide eliminar un registro del modelo anónimo mientras exista su correspondiente ficha en el modelo personal, evitando así huérfanos referenciales. El Listado~\ref{lst:tablas_core} muestra la definición de ambas tablas.
 
@@ -138,12 +138,12 @@ CREATE TABLE IF NOT EXISTS datos_personales (
 
 La tabla \texttt{historico\_bajas\_medicas} referencia al paciente mediante su \texttt{codigo\_hash} como columna de texto ordinaria, sin declarar clave foránea. Esta solución de compromiso es una consecuencia directa de la limitación del motor ARCHIVE, que no admite restricciones referenciales. Se acepta conscientemente a cambio de los beneficios de compresión que se analizan en el apartado~\ref{sec:benchmark_espacial}.
 
-\paragraph{Enfoque OLTP y ausencia de una dimensión Tiempo explícita}
+\paragraph{Enfoque OLTP y ausencia de una dimensión Tiempo explícita.}
 
 Una pregunta que nos surgió durante el diseño fue si convenía modelar el tiempo como una dimensión propia, al estilo de un esquema en estrella de un \textit{data warehouse}, con una tabla \texttt{tiempo} a la que apuntaran las claves foráneas de los eventos. Tras valorarlo, decidimos no hacerlo, y creemos que la decisión está justificada. Añadir una tabla física explícita denominada \texttt{tiempo} requeriría rediseñar el diagrama EER, modificar las claves foráneas, reescribir el generador de datos en Python para insertar los registros dimensionales y reestructurar todas las consultas SQL y XML realizadas hasta ahora. A nivel de ingeniería, en un sistema que gestiona colas en tiempo real (triaje) y registros clínicos longitudinales, el diseño OLTP actual es preciso y evita la sobrecarga de uniones (JOIN) innecesarias para consultar una fecha. En otras palabras, las dimensiones temporales (año, mes, día) son tan baratas de calcular sobre las propias columnas \texttt{DATE} mediante funciones nativas de MySQL como \texttt{YEAR()} o \texttt{MONTH()} que el coste de mantener una tabla de calendario separada no compensaría: estaríamos pagando complejidad y JOINs adicionales para resolver algo que el motor ya hace de forma directa. Un esquema en estrella tiene todo el sentido cuando el objetivo principal es la explotación analítica masiva (OLAP); aquí, en cambio, el patrón de uso dominante es transaccional —dar de alta a un paciente en triaje, abrir su ficha, registrar un evento—, y para eso el modelo normalizado orientado a transacciones es la opción correcta.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Seguridad y Gestión de Roles}
+\subsubsection{Seguridad y gestión de roles}
 % ---------------------------------------------------------------------------
 
 La política de seguridad del sistema se basa en el principio de \textbf{mínimo privilegio}: cada cuenta de usuario de la base de datos recibe exactamente los permisos que necesita para cumplir su función y ninguno más. Se definen dos perfiles con responsabilidades complementarias y claramente diferenciadas.
@@ -191,7 +191,7 @@ La Figura~\ref{fig:roles} muestra el panel de gestión de usuarios de MySQL Work
 \end{figure}
 
 % ---------------------------------------------------------------------------
-\subsubsection{Población Sintética de Datos}
+\subsubsection{Población sintética de datos}
 % ---------------------------------------------------------------------------
 
 Para que los benchmarks sean representativos de un entorno de producción, se necesita un volumen de datos suficientemente grande. El script \texttt{generador\_datos.py} utiliza \texttt{Faker~(es\_ES)} para generar datos personales coherentes con la realidad española y construye cada registro siguiendo una lógica de combinatoria clínica: las descripciones de eventos, los factores de riesgo y las notas clínicas se obtienen combinando fragmentos predefinidos de texto médico plausible, de modo que el resultado tiene coherencia semántica y no produce cadenas sin sentido que distorsionarían los patrones de consulta.
@@ -206,7 +206,7 @@ Cada paciente sintético generado tiene entre 2 y 6 eventos clínicos distribuid
 \end{figure}
 
 % ---------------------------------------------------------------------------
-\subsubsection{Optimización Temporal: Benchmarking de Consultas}
+\subsubsection{Optimización temporal: benchmarking de consultas}
 \label{sec:benchmark_temporal}
 % ---------------------------------------------------------------------------
 
@@ -215,7 +215,7 @@ Se diseñaron tres consultas representativas de los patrones de acceso más habi
 Todas las mediciones de tiempo se obtienen como la \textbf{media aritmética de 50 ejecuciones consecutivas} con el script \texttt{medidor\_tiempos.py}, lo que reduce la influencia de la variabilidad de caché, gestión de memoria y carga del sistema operativo. Las estadísticas de coste estimado proceden del \textit{Visual Explain} de MySQL Workbench.
 
 % ---- CONSULTA 1 ------------------------------------------------
-\paragraph{Consulta 1: agregación temporal con filtro de rango de fechas}
+\paragraph{Consulta 1: agregación temporal con filtro de rango de fechas.}
 
 La primera consulta cuenta el número de eventos clínicos registrados durante un mes concreto:
 
@@ -286,7 +286,7 @@ Adicionalmente, se comparó el motor InnoDB con MyISAM sobre la misma consulta c
 \end{figure}
 
 % ---- CONSULTA 2 ------------------------------------------------
-\paragraph{Consulta 2: JOIN entre paciente anónimo y evento clínico}
+\paragraph{Consulta 2: JOIN entre paciente anónimo y evento clínico.}
 
 La segunda consulta recupera el historial completo de un paciente concreto cruzando las dos tablas principales del sistema:
 
@@ -354,7 +354,7 @@ La medición Python (Figura~\ref{fig:q2_python}) certifica la mejora: de $39{,}8
 \end{figure}
 
 % ---- CONSULTA 3 ------------------------------------------------
-\paragraph{Consulta 3: cola de triaje por nivel de prioridad}
+\paragraph{Consulta 3: cola de triaje por nivel de prioridad.}
 
 La tercera consulta recupera los pacientes en espera cuyo nivel de triaje Manchester es 1 (inmediata, la máxima prioridad):
 
@@ -415,12 +415,12 @@ La comparativa entre InnoDB y MEMORY (Figura~\ref{fig:q3_motores}) es el experim
 
 La diferencia entre InnoDB y MEMORY puede parecer modesta en valores absolutos ($0{,}66$~ms), pero su significado práctico va más allá del número. InnoDB, incluso con índice, necesita leer datos desde un \textit{buffer pool} con respaldo en disco; cuando ese pool se llena bajo carga, aparecen operaciones de E/S que pueden disparar la latencia de forma impredecible. MEMORY, al operar íntegramente en RAM, garantiza una latencia constante e independiente de la carga de disco, lo que lo convierte en el motor apropiado para cualquier cola que deba responder en tiempo real.
 
-\paragraph{La cara B del motor MEMORY: volatilidad comprobada en la práctica}
+\paragraph{La cara B del motor MEMORY: volatilidad comprobada en la práctica.}
 
 Esta velocidad tiene una contrapartida que pudimos comprobar de primera mano. Como toda la tabla \texttt{triaje\_urgencias\_actual} vive en memoria RAM, basta con reiniciar el servidor para perder su contenido. Nos pasó de forma totalmente involuntaria: al reiniciar el contenedor Docker en el que corría MySQL, la tabla de triaje se vació automáticamente —la estructura de la tabla seguía ahí, pero sin una sola fila dentro—. Lejos de ser un problema, esto encaja a la perfección con la naturaleza de los datos que guarda: la cola de urgencias es información efímera, válida solo mientras hay pacientes esperando, y no tiene ningún sentido conservarla entre arranques del sistema. Volver a llenarla nos costó apenas \textbf{5 segundos}, ejecutando de nuevo el generador de datos sintéticos (\texttt{rellenar\_urgencias.py}), que vuelca un nuevo lote de pacientes en la tabla. Este pequeño incidente terminó siendo la mejor demostración de para qué sirve realmente MEMORY: como una cola de procesamiento rápida y desechable, no como un almacén permanente.
 
 % ---- GRÁFICAS RESUMEN -----------------------------------------------
-\paragraph{Síntesis gráfica del benchmarking temporal}
+\paragraph{Síntesis gráfica del benchmarking temporal.}
 
 Las Figuras~\ref{fig:grafica_indices} y~\ref{fig:grafica_motores} resumen visualmente los resultados del benchmarking.
 
@@ -544,7 +544,7 @@ La Tabla~\ref{tab:benchmark_resumen} consolida todos los resultados numéricos.
 \end{table}
 
 % ---------------------------------------------------------------------------
-\subsubsection{Optimización Espacial: Benchmark de Almacenamiento}
+\subsubsection{Optimización espacial: benchmark de almacenamiento}
 \label{sec:benchmark_espacial}
 % ---------------------------------------------------------------------------
 

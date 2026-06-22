@@ -8,7 +8,7 @@
 
 Llegados a este punto del proyecto teníamos una base relacional muy buena para lo transaccional (Parte~I) y una capa documental XML para razonar sobre jerarquías clínicas (Parte~II). La pregunta natural era: ¿y si el conocimiento médico que queremos aplicar tampoco encaja bien en tablas? Las guías clínicas son justo eso. El protocolo de una neumonía no es una fila: es un objeto con una primera línea de tratamiento (que puede tener uno o varios fármacos), unos criterios de ingreso (que puede tener o no), unos objetivos de control\ldots\ Cada patología trae campos distintos. Meter eso en una tabla relacional obligaría a un mar de columnas vacías o a tablas auxiliares interminables.
 
-Por eso decidimos montar una \textbf{arquitectura híbrida}: MySQL se queda como sistema transaccional (la verdad de los pacientes, las altas, el triaje), y \textbf{MongoDB} entra como almacén documental para las guías clínicas y para los expedientes que vamos a cruzar contra ellas. No es que una tecnología sustituya a la otra; es que cada una hace lo que mejor sabe. MongoDB guarda documentos BSON~\cite{bsonspec} ---básicamente JSON binario--- con esquema flexible, así que una guía con criterios de ingreso y otra sin ellos conviven sin problema en la misma colección.
+Por eso decidimos montar una \textbf{arquitectura híbrida}: MySQL se queda como sistema transaccional (la verdad de los pacientes, las altas, el triaje), y \textbf{MongoDB} entra como almacén documental para las guías clínicas y para los expedientes que vamos a cruzar contra ellas. No es que una tecnología sustituya a la otra; es que cada una hace lo que mejor sabe. MongoDB guarda documentos JSON~\cite{JSONspec} ---básicamente JSON binario--- con esquema flexible, así que una guía con criterios de ingreso y otra sin ellos conviven sin problema en la misma colección.
 
 \paragraph{Privacy-by-Design: anonimización desde la primera inserción.}
 Hay un argumento arquitectónico que para nosotros es el más importante de toda esta parte. Cuando cargamos los datos masivos de pacientes en MongoDB (50.000 registros de expedientes externos), \textit{en ningún momento} viaja un DNI. La razón es que el identificador del paciente ya nace anonimizado en origen: nuestro generador (\texttt{generador\_datos\_claude.py}) convierte el documento de identidad en un hash irreversible SHA-256~\cite{fips180sha256} \textit{en la propia inserción inicial} en MySQL, tal y como muestra el Listado~\ref{lst:hash_mongo}. Cuando exportamos esos datos hacia MongoDB, lo que sale es ese hash de 64 caracteres, nunca el dato personal.
@@ -19,26 +19,26 @@ codigo_hash = hashlib.sha256(documento.encode()).hexdigest()
 # A partir de aqui SOLO se propaga codigo_hash; el DNI nunca sale de MySQL
 \end{lstlisting}
 
-Esto es \textit{privacidad desde el diseño} en el sentido literal del término: la protección no es un parche que aplicamos al final, sino una propiedad que está cocida en el dato desde que existe. Y es una diferencia importante respecto a la práctica habitual de muchos sistemas, que exportan la información \enquote{en crudo} (con datos identificativos) y la anonimizan \textit{a posteriori}, dejando una ventana de tiempo en la que los datos personales han estado expuestos en ficheros intermedios. En nuestro flujo esa ventana sencillamente no existe: la colección \texttt{pacientes\_externos} de MongoDB se identifica siempre por el hash (Figura~\ref{fig:bson_paciente}), de modo que cualquier análisis posterior opera ya sobre datos seudonimizados, en línea con lo que el RGPD~\cite{rgpd2016} exige para los datos de salud.
+Esto es \textit{privacidad desde el diseño} en el sentido literal del término: la protección no es un parche que aplicamos al final, sino una propiedad que está cocida en el dato desde que existe. Y es una diferencia importante respecto a la práctica habitual de muchos sistemas, que exportan la información \enquote{en crudo} (con datos identificativos) y la anonimizan \textit{a posteriori}, dejando una ventana de tiempo en la que los datos personales han estado expuestos en ficheros intermedios. En nuestro flujo esa ventana sencillamente no existe: la colección \texttt{pacientes\_externos} de MongoDB se identifica siempre por el hash (Figura~\ref{fig:JSON_paciente}), de modo que cualquier análisis posterior opera ya sobre datos seudonimizados, en línea con lo que el RGPD~\cite{rgpd2016} exige para los datos de salud.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.78\textwidth]{ejemplo_documentos_pacientes_externos_json_en_mongodb.png}
     \caption{Documentos de la colección \texttt{pacientes\_externos} en MongoDB Compass. El campo \texttt{id\_paciente} es el hash SHA-256; no hay ni rastro del DNI ni del nombre del paciente.}
-    \label{fig:bson_paciente}
+    \label{fig:JSON_paciente}
 \end{figure}
 
 % ===========================================================================
-\subsection{Modelado BSON e integración dinámica con \texttt{\$lookup}}
+\subsection{Modelado JSON e integración dinámica con \texttt{\$lookup}}
 % ===========================================================================
 
-Las guías clínicas se modelan como documentos BSON con estructura anidada. Cada guía lleva su código CIE-10 (que es la clave por la que la enlazaremos con los pacientes), la enfermedad, la especialidad de referencia y, dentro de \texttt{protocolo\_tratamiento}, los arrays y subcampos del tratamiento. La Figura~\ref{fig:bson_guia} muestra dos ejemplos reales: fíjese en que la guía de la angina tiene \texttt{criterios\_ingreso} y la de la diabetes no, pero ambas conviven sin que el esquema se queje. Esa flexibilidad es justo lo que buscábamos.
+Las guías clínicas se modelan como documentos JSON con estructura anidada. Cada guía lleva su código CIE-10 (que es la clave por la que la enlazaremos con los pacientes), la enfermedad, la especialidad de referencia y, dentro de \texttt{protocolo\_tratamiento}, los arrays y subcampos del tratamiento. La Figura~\ref{fig:JSON_guia} muestra dos ejemplos reales: fíjese en que la guía de la angina tiene \texttt{criterios\_ingreso} y la de la diabetes no, pero ambas conviven sin que el esquema se queje. Esa flexibilidad es justo lo que buscábamos.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{ejemplo_documentos_guias_clinicas_json_en_mongodb.png}
     \caption{Dos documentos de la colección \texttt{guias\_clinicas}. El subdocumento \texttt{protocolo\_tratamiento} contiene arrays (\texttt{primera\_linea}, \texttt{criterios\_ingreso}, \texttt{objetivos\_control}) que varían de una patología a otra sin romper el modelo.}
-    \label{fig:bson_guia}
+    \label{fig:JSON_guia}
 \end{figure}
 
 Lo interesante no es guardar las guías, sino \textit{aplicarlas} a los pacientes. Para eso usamos el \textit{aggregation pipeline} de MongoDB~\cite{mongodbmanual}, que funciona como una cadena de montaje: el documento entra por una etapa, sale transformado y pasa a la siguiente. La pieza clave es \texttt{\$lookup}, que es el equivalente de un \texttt{JOIN} relacional pero entre colecciones de documentos.
