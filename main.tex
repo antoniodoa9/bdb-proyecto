@@ -12,7 +12,10 @@
 %% \ttfamily no renderiza en ningún contexto (listings ni inline). Se define una
 %% familia explícita con \newfontfamily (que sí funciona) y se redirigen tanto
 %% \lstset como \texttt para usarla.
-\newfontfamily{\codefont}[Scale=0.88]{Iosevka.ttf}
+%% Ligatures={NoCommon,NoContextual,NoDiscretionary}: Iosevka es una fuente de
+%% programación con ligaduras contextuales que, al nombrar etiquetas XML en el
+%% texto (p.ej. <row>), se comían el ">" y dejaban un hueco. Se desactivan.
+\newfontfamily{\codefont}[Scale=0.88, Ligatures={NoCommon,NoContextual,NoDiscretionary}]{Iosevka.ttf}
 \lstset{basicstyle=\codefont\small}
 \renewcommand{\texttt}[1]{{\codefont\small #1}}
 
@@ -39,6 +42,10 @@
   \renewcommand{\tablename}{Tabla}%
   \renewcommand{\listtablename}{Índice de tablas}%
 }
+
+%% listings: traducimos "Listing" -> "Listado" en los pies y titulamos su indice.
+\renewcommand{\lstlistingname}{Listado}
+\renewcommand{\lstlistlistingname}{Índice de listados}
 
 %% Paquetes adicionales para la parte relacional
 \usepackage{pgfplots}
@@ -79,6 +86,8 @@
 \listoffigures
 
 \listoftables
+
+\lstlistoflistings
 
 %% Sections
 \section{Introducción}
