@@ -13,8 +13,8 @@
 %% familia explícita con \newfontfamily (que sí funciona) y se redirigen tanto
 %% \lstset como \texttt para usarla.
 %% Ligatures={NoCommon,NoContextual,NoDiscretionary}: Iosevka es una fuente de
-%% programación con ligaduras contextuales que, al nombrar etiquetas XML en el
-%% texto (p.ej. <row>), se comían el ">" y dejaban un hueco. Se desactivan.
+%% programación; se desactivan sus ligaduras para que en el código aparezcan los
+%% caracteres literales (->, >=, !=, etc.) en lugar de glifos compuestos.
 \newfontfamily{\codefont}[Scale=0.88, Ligatures={NoCommon,NoContextual,NoDiscretionary}]{Iosevka.ttf}
 \lstset{basicstyle=\codefont\small}
 \renewcommand{\texttt}[1]{{\codefont\small #1}}
@@ -46,6 +46,13 @@
 %% listings: traducimos "Listing" -> "Listado" en los pies y titulamos su indice.
 \renewcommand{\lstlistingname}{Listado}
 \renewcommand{\lstlistlistingname}{Índice de listados}
+
+%% babel-spanish activa "<" y ">" como abreviaturas (<<,>> -> «,»). Eso rompía
+%% el nombrado de etiquetas XML en la prosa (p.ej. \texttt{<row>}) con el error
+%% "Argument of \language@active@arg> has an extra }". Se desactivan esas
+%% abreviaturas. Va en \AtBeginDocument para que persista tras la selección de
+%% idioma que babel hace al iniciar el documento.
+\AtBeginDocument{\shorthandoff{<>}}
 
 %% Paquetes adicionales para la parte relacional
 \usepackage{pgfplots}
